@@ -8,6 +8,7 @@ import { useState, type ReactNode } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { useProof } from '../context/ProofContext'
 import { Brand } from './Brand'
+import { ThemeToggle } from './ThemeToggle'
 
 const primary = [
   ['/dashboard', 'Command center', LayoutDashboard], ['/resume', 'Resume lab', FileSearch],
@@ -31,16 +32,17 @@ export function Shell({ children }: { children: ReactNode }) {
   const location = useLocation()
   const navigate = useNavigate()
   const { state } = useProof()
+  const focusing = location.pathname === '/focus'
   const titles: Record<string, string> = {
     '/dashboard': 'Command center', '/resume': 'Resume lab', '/role': 'Target role', '/evidence': 'Career evidence',
     '/interview': 'Adaptive interview', '/feedback': 'Evidence feedback', '/learn': 'Learning plan', '/video-plan': 'Video study planner',
     '/quest': 'Career quest', '/focus': 'Focus shield', '/settings': 'Privacy & settings', '/onboarding': 'Private setup',
   }
-  return <div className="app-shell">
+  return <div className={focusing ? 'app-shell focus-shell' : 'app-shell'}>
     <button className="mobile-menu" onClick={() => setOpen(!open)} aria-label="Toggle menu">{open ? <X /> : <Menu />}</button>
     <aside className={open ? 'sidebar open' : 'sidebar'}>
       <Brand />
-      <div className="mode-chip"><span /> LOCAL DEMO MODE</div>
+      <div className="mode-chip"><span /> Demo workspace</div>
       <nav>
         <NavGroup label="Workspace" items={primary} close={() => setOpen(false)} />
         <NavGroup label="Growth loop" items={growth} close={() => setOpen(false)} />
@@ -54,9 +56,11 @@ export function Shell({ children }: { children: ReactNode }) {
       <header className="topbar">
         <div><span className="eyebrow"><Sparkles size={13} /> PROOFCOACH WORKSPACE</span><h1>{titles[location.pathname] || 'ProofCoach AI'}</h1></div>
         <div className="top-actions">
-          <div className="mini-progress"><span>QUEST</span><strong>{state.metrics.questPoints} XP</strong><i><b style={{ width: `${Math.min(100, state.metrics.questPoints / 4)}%` }} /></i></div>
-          <button className="btn ghost" onClick={() => navigate('/interview')}><Swords size={17} /> Practice now</button>
-          <div className="avatar">DC</div>
+          <span className="top-local"><ShieldCheck size={15} />Local-first</span>
+          <span className="top-demo">DEMO</span>
+          <ThemeToggle />
+          {!focusing && <button className="btn ghost top-practice" onClick={() => navigate('/interview')}><Swords size={17} /> Practice</button>}
+          <button className="avatar" onClick={() => navigate('/settings')} title="Settings" aria-label="Open settings">{state.candidate.name?.slice(0, 1).toUpperCase() || 'P'}</button>
         </div>
       </header>
       <AnimatePresence mode="wait"><motion.div key={location.pathname} className="page" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: .22 }}>{children}</motion.div></AnimatePresence>

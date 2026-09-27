@@ -1,0 +1,2 @@
+Entry-level Backend Developer. Required: Python, REST, SQL, Docker, Testing, and basic System Design. The candidate should build maintainable APIs, explain technical trade-offs, diagnose failures, and collaborate through code review.
+

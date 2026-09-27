@@ -1,0 +1,13 @@
+Demo Candidate
+demo.candidate@example.test | +91 90000 00000
+
+EDUCATION
+BE Artificial Intelligence & Machine Learning, 2025–2029
+
+SKILLS
+Python, FastAPI, REST, SQL, Git
+
+PROJECTS
+Flood Prediction API — Built a FastAPI backend with REST endpoints and SQL persistence.
+Reduced API latency by 35% by profiling a slow route and adding a bounded cache.
+

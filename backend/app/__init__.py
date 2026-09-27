@@ -1,0 +1,2 @@
+"""ProofCoach AI local backend."""
+

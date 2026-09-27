@@ -1,0 +1,38 @@
+# Environment and secrets
+.env
+.env.*
+!.env.example
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Local/private runtime data
+backend/data/*.db
+backend/data/*.sqlite*
+backend/uploads/*
+!backend/uploads/.gitkeep
+sample-data/private/
+
+# OS / IDE / temporary
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.log
+tmp/
+temp/
+.sites-runtime/
+site-archive.tgz
+

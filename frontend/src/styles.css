@@ -116,6 +116,9 @@ a { color: inherit; text-decoration: none; }
 .mini-progress i b { display: block; height: 100%; background: var(--crystal); }
 .avatar { width: 34px; height: 34px; display: grid; place-items: center; background: #0c2847; border: 1px solid #1e5b8c; border-radius: 8px; color: #80dcff; font-size: .69rem; font-weight: 900; }
 .page { max-width: 1440px; margin: 0 auto; padding: 29px 30px 55px; }
+.route-loading { min-height: 45vh; display: flex; align-items: center; justify-content: center; gap: 10px; color: #71869e; font-size: .72rem; }
+.route-loading span { width: 9px; height: 9px; border-radius: 50%; background: var(--crystal); box-shadow: 0 0 0 6px rgba(0, 191, 255, .08); animation: route-pulse 1s infinite alternate; }
+@keyframes route-pulse { to { opacity: .35; transform: scale(.78); } }
 .mobile-menu { display: none; }
 
 .panel { background: rgba(7, 17, 31, .82); border: 1px solid #162b47; border-radius: 12px; padding: 20px; box-shadow: inset 0 1px rgba(255, 255, 255, .025); }
@@ -270,4 +273,3 @@ legend { color: #8d9bb0; font-size: .72rem; font-weight: 700; margin-bottom: 7px
   .quest-banner { padding: 22px; grid-template-columns: 1fr; }.quest-rank { display: none; }.points-grid { grid-template-columns: 1fr 1fr; }.focus-clock { width: 260px; height: 260px; }.focus-clock b { font-size: 2.7rem; }
   .plan-summary { grid-template-columns: 1fr 1fr 1fr; }.plan-summary span { padding: 8px 3px; }.coaching-callout, .source-note { grid-template-columns: 35px 1fr; }.coaching-callout .btn, .source-note .btn { grid-column: span 2; }
 }
-

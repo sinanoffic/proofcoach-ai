@@ -36,7 +36,7 @@ export function ProofProvider({ children }: { children: ReactNode }) {
     submitInterview: () => commit({ ...state, interviewAnswered: true, currentQuestion: 1, metrics: { ...state.metrics, interview: 76, claim: 82, questPoints: state.metrics.questPoints + 50 }, completed: Array.from(new Set([...state.completed, 'interview', 'feedback'])) }),
     setEvidenceLockDemo: evidenceLockDemo => commit({ ...state, evidenceLockDemo }),
     resetDemo: () => commit({ ...initialDemoState }),
-    deleteLocalData: () => { localStorage.removeItem(STORAGE_KEY); setState({ ...initialDemoState, candidate: { ...initialDemoState.candidate, name: '' }, completed: [] }) },
+    deleteLocalData: () => { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem('proofcoach-focus-v1'); setState({ ...initialDemoState, candidate: { ...initialDemoState.candidate, name: '' }, completed: [] }) },
   }), [state])
   return <ProofContext.Provider value={value}>{children}</ProofContext.Provider>
 }

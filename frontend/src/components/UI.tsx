@@ -6,7 +6,7 @@ export function PageIntro({ kicker, title, children, actions }: { kicker: string
 }
 
 export function Panel({ title, subtitle, children, className = '', action }: { title?: string, subtitle?: string, children: ReactNode, className?: string, action?: ReactNode }) {
-  return <section className={`panel ${className}`}><div className="panel-top">{title && <div><h3>{title}</h3>{subtitle && <p>{subtitle}</p>}</div>}{action}</div>{children}</section>
+  return <section className={`panel ${className}`}>{(title || action) && <div className="panel-top">{title && <div><h3>{title}</h3>{subtitle && <p>{subtitle}</p>}</div>}{action}</div>}{children}</section>
 }
 
 export function StatusPill({ state, children }: { state: 'pass' | 'warn' | 'danger' | 'info' | 'muted', children: ReactNode }) {
@@ -29,4 +29,3 @@ export function ScoreRing({ value, label, tone = 'blue' }: { value: number, labe
 export function EmptyCheck({ checked, children }: { checked: boolean, children: ReactNode }) {
   return <div className={checked ? 'check-item checked' : 'check-item'}>{checked ? <CircleCheck size={18} /> : <span className="empty-dot" />}{children}</div>
 }
-

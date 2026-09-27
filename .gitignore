@@ -22,6 +22,8 @@ venv/
 # Local/private runtime data
 backend/data/*.db
 backend/data/*.sqlite*
+data/*.db
+data/*.sqlite*
 backend/uploads/*
 !backend/uploads/.gitkeep
 sample-data/private/

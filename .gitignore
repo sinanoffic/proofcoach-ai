@@ -6,6 +6,7 @@
 # Frontend
 frontend/node_modules/
 frontend/dist/
+/dist/
 frontend/.vite/
 *.tsbuildinfo
 
@@ -35,4 +36,3 @@ tmp/
 temp/
 .sites-runtime/
 site-archive.tgz
-

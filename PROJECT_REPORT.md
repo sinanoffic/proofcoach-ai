@@ -6,7 +6,7 @@
 > **Public demo:** https://proofcoach-ai.vercel.app  
 > **Source repository:** `sinanoffic/proofcoach-ai` (private)  
 > **Stable branch:** `main`  
-> **Verified deployment commit:** `a5b1078b5c1c7e3b457252c4a6998140ec62bedd`
+> **Verified deployment commit:** `7d15fbff92e47d0e4d663e6c24c75b3724c4d3ea`
 
 ## Table of contents
 
@@ -126,7 +126,7 @@ The intended reliable hackathon path is:
 5. Trace the Career Evidence Graph.
 6. Challenge the 35% API latency claim in an interview.
 7. Review evidence-based feedback.
-8. demonstrate the safe and blocked Evidence Lock rewrites.
+8. Demonstrate the safe and blocked Evidence Lock rewrites.
 9. Review Docker, Testing, and System Design learning priorities.
 10. Check Career Quest and before-vs-after progress.
 

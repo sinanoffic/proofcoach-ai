@@ -17,6 +17,7 @@ This repository is the portable source of truth. The full deterministic hackatho
 - Learning plan, YouTube study planner, PYQ-style practice, Focus Shield, Career Quest
 - Deterministic demo reset and before-vs-after progress
 - Local SQLite persistence and complete profile/resume/interview deletion
+- Dark and light application themes with a browser-saved preference (dark by default)
 
 ## Quick start — Windows PowerShell
 
@@ -62,6 +63,7 @@ macOS/Linux equivalents are documented in [DEVELOPMENT.md](DEVELOPMENT.md).
 cd frontend
 npm run lint
 npm run typecheck
+npm test
 npm run build
 
 cd ..\backend
@@ -70,7 +72,10 @@ pytest
 
 ## Privacy and accuracy boundaries
 
+The global moon/sun control and Settings → Appearance switch the entire application between a refined dark workspace and a white editorial workspace. The preference is stored as `proofcoach-theme`, independent of demo state; an inline bootstrap in `frontend/index.html` applies it before React loads. Semantic tokens live in `frontend/src/styles.css` and chart/graph palettes respond to the theme context. Shared UI primitives are in `frontend/src/components/`.
+
+The public Vercel deployment is a deterministic frontend demo. Uploading a personal PDF/DOCX requires your own local FastAPI server; if unavailable, the UI explicitly keeps the seeded sample and states that the selected file was not analyzed.
+
 Resume files are processed by the local FastAPI backend and are not sent to analytics. Demo mode uses deterministic seeded data. Browser speech features remain optional and always have a text fallback. ProofCoach never infers gender and never claims to prove that a real-world resume statement is true. It reports only the evidence demonstrated inside the interview.
 
 See [ARCHITECTURE.md](ARCHITECTURE.md), [INNOVATIONS.md](INNOVATIONS.md), [DEVELOPMENT.md](DEVELOPMENT.md), and [DEMO_SCRIPT.md](DEMO_SCRIPT.md).
-

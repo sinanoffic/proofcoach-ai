@@ -434,24 +434,22 @@ The **Reset Demo** control restores the complete seeded state for repeated judge
 
 ## 10. Design system and brand
 
-The interface uses a premium black-and-blue crystal visual language:
+The interface now has application-wide dark and white themes. Dark retains the black-and-blue crystal identity; light uses white editorial surfaces and ink typography. Both share semantic variables, and the global header and Settings appearance controls save `proofcoach-theme` in the browser. An inline bootstrap sets the theme before React renders to avoid a bright initial flash. The Phoenix remains the supplied asset, shown at low opacity in both themes.
 
-| Token | Value |
-| --- | --- |
-| Primary black | `#03060D` |
-| Deep background | `#050A14` |
-| Blue-black surface | `#07111F` |
-| Primary blue | `#006BFF` |
-| Crystal blue | `#00BFFF` |
-| Cyan | `#4DEBFF` |
-| Deep sapphire | `#083DCC` |
-| White | `#F4F8FF` |
+| Semantic token | Dark | Light |
+| --- | --- | --- |
+| Background | `#03060D` | `#F7F9FC` |
+| Surface | `#0A111D` | `#FFFFFF` |
+| Text | `#F4F8FF` | `#111827` |
+| Primary | `#1877FF` | `#1769FF` |
+| Crystal | `#27C4FF` | `#007DBD` |
+| Success / warning / danger | `#22C77A` / `#F2B84B` / `#F26161` | `#16875F` / `#A66413` / `#D64545` |
 
 Green communicates verified evidence, amber communicates warnings, and red communicates unsupported or blocked claims.
 
 The supplied blue crystal Phoenix is committed as a real project asset. It appears as the main visual identity and as a low-opacity watermark on selected screens without reducing text readability or changing its aspect ratio.
 
-The visual system favors strong typography, restrained motion, clear information hierarchy, dark panels, subtle borders, and limited glow. It avoids unnecessary particles and excessive gradient decoration.
+The visual system favors strong typography, restrained motion, clear information hierarchy, subtle borders, and limited glow. Reusable panels, score rings, status pills, and the accessible theme toggle sit in `frontend/src/components/`. Recharts and React Flow use theme-aware palettes. The dashboard separates primary evidence measures from progress measures; graph nodes open an inspector with source, strength, connected role, and next action.
 
 ## 11. Technical architecture
 
@@ -649,6 +647,8 @@ npm run typecheck
 npm run build
 npm test
 ```
+
+Four frontend Vitest assertions cover dark default, persistence independent of demo state, safe YouTube URL extraction, and rejection of lookalike domains.
 
 ### Backend validation command
 

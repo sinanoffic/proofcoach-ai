@@ -32,7 +32,7 @@ export function OnboardingPage() {
           <div className="privacy-box"><ShieldCheck /><span><b>No gender inference</b><small>Never inferred from name, resume, photo, voice, or appearance.</small></span></div>
         </div>
       </Panel>
-      <div className="form-footer"><span><Sparkles size={17} /> You can change every preference later.</span><button className="btn primary" type="submit">Create private workspace</button></div>
+      <div className="form-footer"><span><Sparkles size={17} /> You can change every preference later.</span><button className="btn primary" type="submit">Save and open profile</button></div>
     </form>
   </>
 }

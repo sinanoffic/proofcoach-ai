@@ -18,6 +18,7 @@ This repository is the portable source of truth. The full deterministic hackatho
 - Deterministic demo reset and before-vs-after progress
 - Local SQLite persistence and complete profile/resume/interview deletion
 - Dark and light application themes with a browser-saved preference (dark by default)
+- Profile page with the candidate's onboarding details, preferences, and the complete command centre; old `/dashboard` links redirect to `/profile`
 
 ## Quick start — Windows PowerShell
 

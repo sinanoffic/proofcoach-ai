@@ -10,7 +10,7 @@ export function DashboardPage() {
   const { state } = useProof(); const { theme } = useTheme(); const nav = useNavigate(); const m = state.metrics
   const chart = theme === 'light' ? { grid: '#dfe6ef', tick: '#65758a', tooltip: '#ffffff', border: '#cbd7e5', before: '#cbd7e5', after: '#1769ff' } : { grid: '#26374c', tick: '#a8b7ca', tooltip: '#0d1726', border: '#34445b', before: '#41536b', after: '#27c4ff' }
   return <>
-    <PageIntro kicker="YOUR PREPARATION OVERVIEW" title={`Good ${new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 18 ? 'afternoon' : 'evening'}, ${state.candidate.name || 'candidate'}.`}>Your progress toward {state.candidate.targetRole}. Each measure has its own evidence and a clear next step.</PageIntro>
+    <PageIntro kicker="YOUR COMMAND CENTRE" title="Your preparation at a glance.">Progress toward {state.candidate.targetRole}. Each measure has its own evidence and a clear next step.</PageIntro>
     <div className="dashboard-overview"><div><span>YOUR TARGET</span><strong>{state.candidate.targetRole}</strong><p>Build confidence through demonstrated work, one claim at a time.</p></div><div><span>RECOMMENDED NEXT</span><strong>Defend your latency claim</strong><button className="text-link" onClick={() => nav('/interview')}>Practice the evidence <ArrowRight size={17} /></button></div></div>
     <div className="metrics-grid">
       <MetricCard label="Parser robustness" value={m.parser} suffix="/100" detail="2 layout warnings" icon={<FileSearch />} />

@@ -12,14 +12,14 @@ export function LandingPage() {
     <nav className="landing-nav"><Brand /><div><span className="landing-local"><ShieldCheck size={15} />Private by design</span><ThemeToggle /><button className="btn ghost" onClick={() => navigate('/onboarding')}>Get started</button></div></nav>
     <main className="hero">
       <PhoenixWatermark className="hero-phoenix" />
-      <motion.div className="hero-copy" initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5 }}>
+      <motion.div className="hero-copy" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5 }}>
         <span className="hero-chip"><Sparkles size={15} /> PROOFCOACH AI · CAREER EVIDENCE</span>
         <h1>Build it.<br /><em>Prove it.</em><br />Defend it.</h1>
         <p>A private career preparation system that checks whether your resume can be understood, supported by evidence, and defended in an interview.</p>
         <div className="hero-actions"><button className="btn primary large" onClick={() => navigate('/onboarding')}>Start career preparation <ArrowRight size={19} /></button><button className="btn outline large" onClick={runDemo}>Run demo</button></div>
         <div className="hero-trust"><span><Check />No cloud AI required</span><span><Check />No universal ATS score</span><span><Check />No invented achievements</span></div>
       </motion.div>
-      <motion.div className="hero-console" initial={{ opacity: 0, x: 28 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .6, delay: .1 }}>
+      <motion.div className="hero-console" initial={false} animate={{ opacity: 1, x: 0 }} transition={{ duration: .6, delay: .1 }}>
         <div className="console-head"><span className="pulse-dot" /> LIVE EVIDENCE PATH <small>DEMO</small></div>
         <div className="proof-chain">
           <div><FileSearch /><span><small>RESUME CLAIM</small><b>Reduced API latency by 35%</b></span><i className="amber">VERIFY</i></div>

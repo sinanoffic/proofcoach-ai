@@ -211,6 +211,11 @@ flowchart TD
     R3 -.-> R15
 ```
 
+<figure>
+  <img src="screenshots/landing.png" alt="ProofCoach AI Landing Workspace" />
+  <figcaption>Figure 5.1: ProofCoach AI Landing Workspace featuring the Phoenix branding, trust boundaries, and live evidence path preview.</figcaption>
+</figure>
+
 ### Route Index and Component Responsibilities
 
 | Route | View Component | Core Purpose & User Capabilities | Data Dependencies |

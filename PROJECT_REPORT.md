@@ -136,7 +136,8 @@ The intended reliable hackathon path is:
 | --- | --- | --- |
 | `/` | Landing | Product story, trust boundaries, deterministic demo entry |
 | `/onboarding` | Onboarding | Candidate profile and interview preferences |
-| `/dashboard` | Command center | Six transparent metrics, priorities, next tasks, progress |
+| `/profile` | Profile & command centre | Candidate details, practice preferences, six transparent metrics, priorities, next tasks, progress |
+| `/dashboard` | Legacy redirect | Opens `/profile` so existing links keep working |
 | `/resume` | Resume Lab | Upload, extraction summary, parser checks, claim detection |
 | `/role` | Target Role | Job-description or seeded-role requirements and gaps |
 | `/evidence` | Evidence Graph | Skill-to-project-to-claim-to-interview-to-requirement links |
@@ -148,7 +149,7 @@ The intended reliable hackathon path is:
 | `/focus` | Focus Shield | Focus timer, current task, autosave, wellbeing cap |
 | `/settings` | Settings | Privacy controls, reset demo, Delete My Data |
 
-All pages are lazy-loaded through React Router. The Vercel configuration rewrites direct routes to `index.html`, so refreshing `/dashboard`, `/resume`, or another application route works correctly.
+All pages are lazy-loaded through React Router. The Vercel configuration rewrites direct routes to `index.html`, so refreshing `/profile`, `/resume`, or another application route works correctly.
 
 ## 6. Feature report
 
@@ -449,7 +450,7 @@ Green communicates verified evidence, amber communicates warnings, and red commu
 
 The supplied blue crystal Phoenix is committed as a real project asset. It appears as the main visual identity and as a low-opacity watermark on selected screens without reducing text readability or changing its aspect ratio.
 
-The visual system favors strong typography, restrained motion, clear information hierarchy, subtle borders, and limited glow. Reusable panels, score rings, status pills, and the accessible theme toggle sit in `frontend/src/components/`. Recharts and React Flow use theme-aware palettes. The dashboard separates primary evidence measures from progress measures; graph nodes open an inspector with source, strength, connected role, and next action.
+The visual system favors strong typography, restrained motion, clear information hierarchy, subtle borders, and limited glow. Reusable panels, score rings, status pills, and the accessible theme toggle sit in `frontend/src/components/`. Recharts and React Flow use theme-aware palettes. The Profile page brings the candidate's supplied details and practice preferences together with the command centre, which separates primary evidence measures from progress measures; graph nodes open an inspector with source, strength, connected role, and next action.
 
 ## 11. Technical architecture
 

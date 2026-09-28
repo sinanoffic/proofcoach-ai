@@ -14,6 +14,7 @@ ProofCoach AI is a local-first career preparation platform. Its core promise is 
 - `frontend/src/context/ThemeContext.tsx` and `frontend/src/services/theme.ts`: browser preference and application-wide dark/light state.
 - `frontend/src/styles.css`: semantic background, surface, border, text, accent, and status tokens; both themes share component rules.
 - `frontend/src/components/UI.tsx`, `Shell.tsx`, `ThemeToggle.tsx`: reusable panels, headers, scores, badges, navigation and accessible global theme control.
+- `frontend/src/pages/ProfilePage.tsx`: candidate details and preparation preferences; embeds the existing `DashboardPage.tsx` command centre. `/dashboard` redirects to `/profile` for old links.
 
 The browser stores only non-sensitive demo/navigation state. User files and interview records belong to the local backend. `AIProvider` is the only AI boundary: deterministic demo and Ollama implementations share one interface.
 
@@ -53,3 +54,5 @@ Simulated in demo mode: seeded candidate/resume, deterministic AI-style explanat
 Hackathon prototype implemented as a complete deterministic vertical slice. Before extending, run the full test/build commands and preserve the demo reset path. Next production steps: encrypted storage, authentication, richer document-layout analysis, verified learning-source refresh, and mobile notification APIs.
 
 The UI polish adds two themes, an interactive evidence-node inspector, a hierarchical dashboard, drag-and-drop resume input, working Settings export, and validated YouTube embeds. The Vercel site remains a frontend demo; real parsing and SQLite require local FastAPI. The focus timer state is saved in the browser; OS notification filtering and emergency contact are future/simulated capabilities. Frontend tests cover theme storage and YouTube URL validation; backend has the domain tests.
+
+The Profile navigation opens `/profile`, where every onboarding field and the command centre are shown together. The header avatar opens Profile; Settings remains separate. Keep voluntary gender hidden unless explicitly supplied, and never infer missing profile fields.

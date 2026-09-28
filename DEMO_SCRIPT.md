@@ -8,8 +8,7 @@
 6. **Feedback:** show baseline explained, measurement partial, ownership yes, trade-offs weak. Clarify that higher confidence is demonstrated understanding—not independent proof.
 7. **Evidence Lock:** compare the safe wording with the blocked “40%” rewrite.
 8. **Learning:** show Docker, Testing, and System Design priorities and the 2h30m/day video plan.
-9. **Quest and progress:** show Build / Prove / Perform points and Session 1 vs Session 2.
+9. **Quest and profile:** show Build / Prove / Perform points, then open Profile to show candidate details and the command centre with Session 1 vs Session 2 progress.
 10. **Privacy:** open Settings, show local mode and Delete My Data; use Reset Demo for the next judge.
 
 If time is short, use the persistent **Demo path** button to advance through the core journey.
-

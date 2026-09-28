@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import {
   ChevronRight, FileSearch, Focus, Gauge, GitBranch,
   GraduationCap, LayoutDashboard, Menu, MessageSquareText, Settings, ShieldCheck,
-  Sparkles, Swords, Target, Trophy, Video, X,
+  Sparkles, Swords, Target, Trophy, UserRound, Video, X,
 } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
@@ -11,10 +11,10 @@ import { Brand } from './Brand'
 import { ThemeToggle } from './ThemeToggle'
 
 const primary = [
-  ['/dashboard', 'Command center', LayoutDashboard], ['/resume', 'Resume lab', FileSearch],
-  ['/role', 'Target role', Target], ['/evidence', 'Evidence graph', GitBranch],
+  ['/resume', 'Resume lab', FileSearch], ['/role', 'Target role', Target], ['/evidence', 'Evidence graph', GitBranch],
   ['/interview', 'Interview', MessageSquareText], ['/feedback', 'Feedback', Gauge],
 ] as const
+const profile = [['/profile', 'Profile', UserRound]] as const
 const growth = [
   ['/learn', 'Learning plan', GraduationCap], ['/video-plan', 'Video planner', Video],
   ['/quest', 'Career quest', Trophy], ['/focus', 'Focus shield', Focus],
@@ -34,7 +34,7 @@ export function Shell({ children }: { children: ReactNode }) {
   const { state } = useProof()
   const focusing = location.pathname === '/focus'
   const titles: Record<string, string> = {
-    '/dashboard': 'Command center', '/resume': 'Resume lab', '/role': 'Target role', '/evidence': 'Career evidence',
+    '/profile': 'Profile', '/dashboard': 'Profile', '/resume': 'Resume lab', '/role': 'Target role', '/evidence': 'Career evidence',
     '/interview': 'Adaptive interview', '/feedback': 'Evidence feedback', '/learn': 'Learning plan', '/video-plan': 'Video study planner',
     '/quest': 'Career quest', '/focus': 'Focus shield', '/settings': 'Privacy & settings', '/onboarding': 'Private setup',
   }
@@ -44,6 +44,7 @@ export function Shell({ children }: { children: ReactNode }) {
       <Brand />
       <div className="mode-chip"><span /> Demo workspace</div>
       <nav>
+        <NavGroup label="Your space" items={profile} close={() => setOpen(false)} />
         <NavGroup label="Workspace" items={primary} close={() => setOpen(false)} />
         <NavGroup label="Growth loop" items={growth} close={() => setOpen(false)} />
       </nav>
@@ -60,7 +61,7 @@ export function Shell({ children }: { children: ReactNode }) {
           <span className="top-demo">DEMO</span>
           <ThemeToggle />
           {!focusing && <button className="btn ghost top-practice" onClick={() => navigate('/interview')}><Swords size={17} /> Practice</button>}
-          <button className="avatar" onClick={() => navigate('/settings')} title="Settings" aria-label="Open settings">{state.candidate.name?.slice(0, 1).toUpperCase() || 'P'}</button>
+          <button className="avatar" onClick={() => navigate('/profile')} title="Profile" aria-label="Open profile">{state.candidate.name?.slice(0, 1).toUpperCase() || 'P'}</button>
         </div>
       </header>
       <AnimatePresence mode="wait"><motion.div key={location.pathname} className="page" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: .22 }}>{children}</motion.div></AnimatePresence>

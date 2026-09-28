@@ -4,7 +4,7 @@ import { Shell } from './components/Shell'
 
 const LandingPage = lazy(() => import('./pages/LandingPage').then(module => ({ default: module.LandingPage })))
 const OnboardingPage = lazy(() => import('./pages/OnboardingPage').then(module => ({ default: module.OnboardingPage })))
-const DashboardPage = lazy(() => import('./pages/DashboardPage').then(module => ({ default: module.DashboardPage })))
+const ProfilePage = lazy(() => import('./pages/ProfilePage').then(module => ({ default: module.ProfilePage })))
 const ResumePage = lazy(() => import('./pages/ResumePage').then(module => ({ default: module.ResumePage })))
 const RolePage = lazy(() => import('./pages/RolePage').then(module => ({ default: module.RolePage })))
 const EvidencePage = lazy(() => import('./pages/EvidencePage').then(module => ({ default: module.EvidencePage })))
@@ -21,7 +21,8 @@ export default function App() {
   const content = <Suspense fallback={<div className="route-loading"><span />Preparing evidence workspace…</div>}><Routes>
     <Route path="/" element={<LandingPage />} />
     <Route path="/onboarding" element={<OnboardingPage />} />
-    <Route path="/dashboard" element={<DashboardPage />} />
+    <Route path="/profile" element={<ProfilePage />} />
+    <Route path="/dashboard" element={<Navigate to="/profile" replace />} />
     <Route path="/resume" element={<ResumePage />} />
     <Route path="/role" element={<RolePage />} />
     <Route path="/evidence" element={<EvidencePage />} />

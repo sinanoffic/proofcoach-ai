@@ -8,7 +8,7 @@ export function OnboardingPage() {
   const { state, updateCandidate, complete } = useProof(); const navigate = useNavigate()
   const c = state.candidate
   const update = (key: keyof Candidate, value: string | number) => updateCandidate({ [key]: value })
-  const submit = (event: React.FormEvent) => { event.preventDefault(); complete('onboarding'); navigate('/dashboard') }
+  const submit = (event: React.FormEvent) => { event.preventDefault(); complete('onboarding'); navigate('/profile') }
   return <>
     <PageIntro kicker="PRIVATE SETUP" title="Shape your preparation around the role.">Nothing here is used to infer your identity. Interviewer preferences are always voluntary and changeable.</PageIntro>
     <form className="onboarding-grid" onSubmit={submit}>
@@ -36,4 +36,3 @@ export function OnboardingPage() {
     </form>
   </>
 }
-

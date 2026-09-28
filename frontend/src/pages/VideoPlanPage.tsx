@@ -1,28 +1,134 @@
-import { CalendarDays, Clock3, FileText, Play, Sparkles, Youtube } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { BookOpen, CheckCircle2, FileText, HelpCircle, Lightbulb, Play, Plus, Star, Youtube } from 'lucide-react'
+import { useState } from 'react'
 import { PageIntro, Panel, StatusPill } from '../components/UI'
+import { useProof } from '../context/ProofContext'
 import { videoId } from '../services/video'
 
 export function VideoPlanPage() {
-  const [url, setUrl] = useState('https://youtu.be/6iAhu9PYDss?si=Q1rUGJdmA0S03oWM'); const [duration, setDuration] = useState(900); const [notes, setNotes] = useState('')
+  const { state, addVideoNote } = useProof()
+  const { video, project } = state
+  const [url, setUrl] = useState('https://youtu.be/6iAhu9PYDss')
+  const [notesInput, setNotesInput] = useState('')
+  const [timestamp] = useState(1102) // simulated current time 18:22
   const id = videoId(url)
-  const days = useMemo(() => Math.ceil(duration / 112), [duration]); const sessions = Array.from({ length: Math.min(days, 6) }, (_, index) => ({ day: index + 1, start: index * 112, end: Math.min(duration, (index + 1) * 112) }))
-  const time = (minutes: number) => `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`
+
+  const timeString = (secs: number) => `${String(Math.floor(secs / 3600)).padStart(2, '0')}:${String(Math.floor((secs % 3600) / 60)).padStart(2, '0')}:${String(secs % 60).padStart(2, '0')}`
+  
+  const currentTopic = 'Python decorators'
+  const currentObjective = 'Understand how decorators modify functions and why they are used for things like API authentication.'
+  
+  const handleAddNote = () => {
+    addVideoNote({ timestamp, topic: currentTopic, text: 'New note at ' + timeString(timestamp) })
+  }
+
   return <>
-    <PageIntro kicker="VIDEO STUDY PLANNER" title="Turn a long course into daily evidence.">ProofCoach embeds the official YouTube player. It does not download copyrighted video files.</PageIntro>
-    <div className="video-grid">
-      <Panel title="Course input" subtitle="YouTube URL + authorized transcript or your own notes.">
-        <label>YouTube URL<div className="input-icon"><Youtube /><input value={url} onChange={e => setUrl(e.target.value)} /></div></label>
-        <div className="video-embed">{id ? <iframe key={id} src={`https://www.youtube-nocookie.com/embed/${id}`} title="YouTube learning video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen /> : <div className="video-invalid">Enter a valid YouTube link to preview the official player.</div>}</div>
-        <label>Course duration <b>{Math.floor(duration / 60)}h {duration % 60}m</b><input type="range" min="600" max="1200" step="30" value={duration} onChange={e => setDuration(Number(e.target.value))} /></label>
-        <label>Paste transcript / notes <small>optional</small><textarea rows={5} value={notes} onChange={e => setNotes(e.target.value)} placeholder="Paste transcript or notes you are authorized to use. ProofCoach will extract topics, concepts, objectives, and quiz themes." /></label>
-      </Panel>
-      <Panel title={`${days}-day study route`} subtitle="2h 30m/day · 75% learning · 25% practice" action={<StatusPill state="info">ADAPTIVE</StatusPill>}>
-        <div className="plan-summary"><span><CalendarDays /><b>{days} days</b><small>to complete</small></span><span><Clock3 /><b>112 min</b><small>video / day</small></span><span><Sparkles /><b>38 min</b><small>practice / day</small></span></div>
-        <div className="day-list">{sessions.map(session => <div key={session.day}><i>{String(session.day).padStart(2, '0')}</i><div><span>DAY {session.day}</span><b>{time(session.start)} – {time(session.end)} video</b><small>Build one example · 5-question PYQ-style Practice · 3 recall notes</small></div><Play /></div>)}</div>
-        {days > 6 && <div className="more-days">+ {days - 6} more sessions generated with the same daily evidence cycle</div>}
-        <div className="transcript-note"><FileText /><span><b>{notes ? 'Notes ready for topic extraction' : 'No authorized transcript supplied'}</b><small>{notes ? 'Concepts will come from your supplied material.' : 'Paste transcript / notes for exact topic extraction.'}</small></span></div>
-      </Panel>
+    <PageIntro kicker="VIDEO STUDY PLANNER" title="Watch. Understand. Practice. Prove."> </PageIntro>
+    
+    <div className="video-layout">
+      <div className="video-main">
+        <Panel className="video-player-panel">
+          <div className="video-url-bar">
+            <Youtube size={18} />
+            <input value={url} onChange={e => setUrl(e.target.value)} placeholder="Paste YouTube URL..." />
+          </div>
+          <div className="video-embed">
+            {id ? <iframe src={`https://www.youtube-nocookie.com/embed/${id}`} title="YouTube learning video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen /> 
+                : <div className="video-invalid">Enter a valid YouTube link.</div>}
+          </div>
+          
+          <div className="video-playback-info">
+            <div>
+              <span className="eyebrow">CURRENTLY WATCHING</span>
+              <h3>{currentTopic}</h3>
+            </div>
+            <div className="timestamp">{timeString(timestamp)}</div>
+          </div>
+          
+          <div className="video-actions">
+            <button className="btn outline" onClick={handleAddNote}><Star size={16}/> Mark important</button>
+            <button className="btn outline" onClick={handleAddNote}><FileText size={16}/> Add note</button>
+            <button className="btn outline"><HelpCircle size={16}/> Generate question</button>
+            <button className="btn outline"><Lightbulb size={16}/> Explain this</button>
+          </div>
+        </Panel>
+
+        <Panel title="Video Learning Progress" subtitle="ProofCoach tracks comprehension, not just watch time.">
+          <div className="video-progress-stats">
+            <div className="v-stat"><b>{video.watched}%</b><span>WATCHED</span></div>
+            <div className="v-stat"><b>{video.understood}%</b><span>UNDERSTOOD</span></div>
+            <div className="v-stat"><b>{video.practiced}%</b><span>PRACTICED</span></div>
+            <div className="v-stat"><b>{video.applied}%</b><span>APPLIED</span></div>
+            <div className="v-stat"><b>{video.proven}%</b><span>PROVEN</span></div>
+          </div>
+        </Panel>
+        
+        <Panel title="Daily Planner" subtitle="Adaptive day-by-day plan based on video content.">
+          <div className="day-list">
+            <div>
+              <i>01</i>
+              <div><span>DAY 1: Python Fundamentals</span><b>00:00:00 – 01:05:00</b><small>Build one example · 5-question PYQ-style Practice</small></div>
+              <CheckCircle2 size={18} className="text-green" />
+            </div>
+            <div>
+              <i>02</i>
+              <div><span>DAY 2: Data Structures & Auth</span><b>01:05:00 – 02:40:00</b><small>Includes Python Decorators & JWT</small></div>
+              <Play size={18} />
+            </div>
+          </div>
+        </Panel>
+      </div>
+
+      <div className="video-side">
+        <Panel title="Current Objective" action={<StatusPill state="info">Demo Mode</StatusPill>}>
+          <div className="objective-card">
+            <BookOpen size={20} />
+            <p>{currentObjective}</p>
+          </div>
+          
+          {project && (
+            <div className="project-connection">
+              <span className="eyebrow">APPLY THIS TO MY PROJECT</span>
+              <p>Active Project: <b>{project.name}</b></p>
+              <div className="suggestion">
+                "Add authentication middleware to the API using decorators."
+              </div>
+              <button className="btn outline wide"><Plus size={16}/> Add to Project</button>
+            </div>
+          )}
+          
+          <div className="practice-section">
+            <span className="eyebrow">PYQ-STYLE PRACTICE</span>
+            <button className="btn primary wide">Practice this section</button>
+          </div>
+        </Panel>
+
+        <Panel title="My Notes" subtitle="Click to seek video">
+          <div className="notes-timeline">
+            {video.notes.map((note) => (
+              <div key={note.id} className="note-item">
+                <div className="note-time">{timeString(note.timestamp)}</div>
+                <div className="note-content">
+                  <b>{note.topic}</b>
+                  <p>{note.text}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </Panel>
+
+        <Panel title="Content Analysis" subtitle="Source: User Notes / Demo Transcript">
+          <textarea rows={4} value={notesInput} onChange={e => setNotesInput(e.target.value)} placeholder="Paste transcript or notes you are authorized to use..." />
+          <div className="chapters">
+            <b>Detected Topics</b>
+            <ul>
+              <li>00:00:00 Introduction</li>
+              <li>00:18:00 Python Basics</li>
+              <li>01:10:00 OOP</li>
+              <li>01:35:00 APIs & Decorators</li>
+            </ul>
+          </div>
+        </Panel>
+      </div>
     </div>
   </>
 }

@@ -12,6 +12,9 @@ interface ProofContextValue {
   setEvidenceLockDemo: (value: DemoState['evidenceLockDemo']) => void
   resetDemo: () => void
   deleteLocalData: () => void
+  updateProject: (project: DemoState['project']) => void
+  addVideoNote: (note: Omit<DemoState['video']['notes'][number], 'id'>) => void
+  completeTask: (taskId: string) => void
 }
 
 const STORAGE_KEY = 'proofcoach-demo-v1'
@@ -37,6 +40,14 @@ export function ProofProvider({ children }: { children: ReactNode }) {
     setEvidenceLockDemo: evidenceLockDemo => commit({ ...state, evidenceLockDemo }),
     resetDemo: () => commit({ ...initialDemoState }),
     deleteLocalData: () => { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem('proofcoach-focus-v1'); setState({ ...initialDemoState, candidate: { ...initialDemoState.candidate, name: '' }, completed: [] }) },
+    updateProject: project => commit({ ...state, project }),
+    addVideoNote: note => commit({ ...state, video: { ...state.video, notes: [...state.video.notes, { ...note, id: 'n' + Date.now() }] } }),
+    completeTask: taskId => {
+      if (!state.project) return
+      const nextTasks = state.project.tasks.map(t => t.id === taskId ? { ...t, completed: true, stage: 'COMPLETED' as const } : t)
+      const nextProgress = Math.min(100, state.project.progress + 4)
+      commit({ ...state, project: { ...state.project, tasks: nextTasks, progress: nextProgress } })
+    },
   }), [state])
   return <ProofContext.Provider value={value}>{children}</ProofContext.Provider>
 }

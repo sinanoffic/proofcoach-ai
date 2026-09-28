@@ -14,6 +14,41 @@ export interface Candidate {
   voluntaryGender: string
 }
 
+export interface ProjectTask {
+  id: string
+  title: string
+  stage: 'NEXT' | 'THIS WEEK' | 'LATER' | 'COMPLETED'
+  completed: boolean
+  priority?: string
+  evidence?: string
+  skill?: string
+}
+
+export interface ProjectState {
+  id: string
+  name: string
+  goal: string
+  stage: string
+  progress: number
+  tasks: ProjectTask[]
+}
+
+export interface VideoNote {
+  id: string
+  timestamp: number
+  topic: string
+  text: string
+}
+
+export interface VideoState {
+  watched: number
+  understood: number
+  practiced: number
+  applied: number
+  proven: number
+  notes: VideoNote[]
+}
+
 export interface DemoState {
   candidate: Candidate
   completed: string[]
@@ -22,6 +57,8 @@ export interface DemoState {
   currentQuestion: number
   answer: string
   evidenceLockDemo: 'idle' | 'safe' | 'blocked'
+  project: ProjectState | null
+  video: VideoState
 }
 
 export interface SkillEvidence {

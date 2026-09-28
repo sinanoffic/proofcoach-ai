@@ -14,6 +14,37 @@ export const initialDemoState: DemoState = {
   currentQuestion: 0,
   answer: '',
   evidenceLockDemo: 'idle',
+  project: {
+    id: 'p1',
+    name: 'AI SafeRoute',
+    goal: 'Build an AI-assisted disaster alert and evacuation guidance system.',
+    stage: 'BUILD',
+    progress: 68,
+    tasks: [
+      { id: 't1', title: 'Problem research', stage: 'COMPLETED', completed: true, evidence: 'Research notes', skill: 'Analysis' },
+      { id: 't2', title: 'Architecture', stage: 'COMPLETED', completed: true, evidence: 'Architecture diagram', skill: 'System Design' },
+      { id: 't3', title: 'Frontend', stage: 'COMPLETED', completed: true, evidence: 'Codebase', skill: 'React' },
+      { id: 't4', title: 'Map interface', stage: 'COMPLETED', completed: true, evidence: 'Feature Demo', skill: 'Maps API' },
+      { id: 't5', title: 'Disaster workflow', stage: 'COMPLETED', completed: true, evidence: 'Demo', skill: 'Workflow logic' },
+      { id: 't6', title: 'Route intelligence', stage: 'NEXT', completed: false, priority: 'High', skill: 'Algorithms' },
+      { id: 't7', title: 'Mobile support', stage: 'THIS WEEK', completed: false },
+      { id: 't8', title: 'Validation & Testing', stage: 'THIS WEEK', completed: false },
+      { id: 't9', title: 'Documentation', stage: 'LATER', completed: false },
+      { id: 't10', title: 'Deployment', stage: 'LATER', completed: false },
+    ]
+  },
+  video: {
+    watched: 42,
+    understood: 35,
+    practiced: 28,
+    applied: 20,
+    proven: 12,
+    notes: [
+      { id: 'n1', timestamp: 1102, topic: 'Python decorators', text: 'Important for auth middleware' },
+      { id: 'n2', timestamp: 5844, topic: 'JWT authentication', text: 'Need to revise JWT.' },
+      { id: 'n3', timestamp: 8140, topic: 'API security', text: 'Rate limiting concepts' },
+    ]
+  }
 }
 
 export const parserChecks = [

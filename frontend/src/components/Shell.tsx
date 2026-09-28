@@ -2,7 +2,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import {
   ChevronRight, FileSearch, Focus, Gauge, GitBranch,
   GraduationCap, LayoutDashboard, Menu, MessageSquareText, Settings, ShieldCheck,
-  Sparkles, Swords, Target, Trophy, UserRound, Video, X,
+  Sparkles, Swords, Target, Trophy, UserRound, Video, X, Beaker,
 } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
@@ -17,6 +17,7 @@ const primary = [
 const profile = [['/profile', 'Profile', UserRound]] as const
 const growth = [
   ['/learn', 'Learning plan', GraduationCap], ['/video-plan', 'Video planner', Video],
+  ['/project-lab', 'Project lab', Beaker],
   ['/quest', 'Career quest', Trophy], ['/focus', 'Focus shield', Focus],
 ] as const
 
@@ -36,7 +37,7 @@ export function Shell({ children }: { children: ReactNode }) {
   const titles: Record<string, string> = {
     '/profile': 'Profile', '/dashboard': 'Profile', '/resume': 'Resume lab', '/role': 'Target role', '/evidence': 'Career evidence',
     '/interview': 'Adaptive interview', '/feedback': 'Evidence feedback', '/learn': 'Learning plan', '/video-plan': 'Video study planner',
-    '/quest': 'Career quest', '/focus': 'Focus shield', '/settings': 'Privacy & settings', '/onboarding': 'Private setup',
+    '/project-lab': 'Project lab', '/quest': 'Career quest', '/focus': 'Focus shield', '/settings': 'Privacy & settings', '/onboarding': 'Private setup',
   }
   return <div className={focusing ? 'app-shell focus-shell' : 'app-shell'}>
     <button className="mobile-menu" onClick={() => setOpen(!open)} aria-label="Toggle menu">{open ? <X /> : <Menu />}</button>

@@ -12,6 +12,7 @@ const InterviewPage = lazy(() => import('./pages/InterviewPage').then(module => 
 const FeedbackPage = lazy(() => import('./pages/FeedbackPage').then(module => ({ default: module.FeedbackPage })))
 const LearnPage = lazy(() => import('./pages/LearnPage').then(module => ({ default: module.LearnPage })))
 const VideoPlanPage = lazy(() => import('./pages/VideoPlanPage').then(module => ({ default: module.VideoPlanPage })))
+const ProjectLabPage = lazy(() => import('./pages/ProjectLabPage').then(module => ({ default: module.ProjectLabPage })))
 const QuestPage = lazy(() => import('./pages/QuestPage').then(module => ({ default: module.QuestPage })))
 const FocusPage = lazy(() => import('./pages/FocusPage').then(module => ({ default: module.FocusPage })))
 const SettingsPage = lazy(() => import('./pages/SettingsPage').then(module => ({ default: module.SettingsPage })))
@@ -30,6 +31,7 @@ export default function App() {
     <Route path="/feedback" element={<FeedbackPage />} />
     <Route path="/learn" element={<LearnPage />} />
     <Route path="/video-plan" element={<VideoPlanPage />} />
+    <Route path="/project-lab" element={<ProjectLabPage />} />
     <Route path="/quest" element={<QuestPage />} />
     <Route path="/focus" element={<FocusPage />} />
     <Route path="/settings" element={<SettingsPage />} />

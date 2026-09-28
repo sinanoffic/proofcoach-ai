@@ -1,0 +1,2419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ProofCoach AI — Complete System & Product Deep-Dive Report</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --bg: #03060D;
+      --surface: #0A111D;
+      --surface-subtle: #0F172A;
+      --border: #1E293B;
+      --border-accent: #27C4FF;
+      --text: #F8FAFC;
+      --text-muted: #94A3B8;
+      --primary: #1877FF;
+      --crystal: #27C4FF;
+      --success: #22C77A;
+      --warning: #F2B84B;
+      --danger: #F26161;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.68;
+      font-size: 15px;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 40px 48px;
+    }
+
+    /* Cover Page */
+    .cover-page {
+      min-height: 95vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: linear-gradient(180deg, rgba(10, 17, 29, 0.95) 0%, rgba(3, 6, 13, 1) 100%);
+      padding: 64px 48px;
+      margin-bottom: 60px;
+      position: relative;
+      overflow: hidden;
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .cover-page::before {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -20%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(39, 196, 255, 0.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .cover-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 24px;
+    }
+
+    .brand-mark {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--crystal);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-mark span {
+      color: #FFF;
+    }
+
+    .cover-middle {
+      margin: 40px 0;
+    }
+
+    .doc-kicker {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--crystal);
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+      display: block;
+    }
+
+    .doc-title {
+      font-size: 38px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.5px;
+      color: #FFFFFF;
+      margin-bottom: 16px;
+    }
+
+    .doc-tagline {
+      font-size: 20px;
+      font-weight: 500;
+      color: var(--crystal);
+      margin-bottom: 28px;
+    }
+
+    .doc-desc {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 680px;
+      line-height: 1.6;
+    }
+
+    .cover-bottom {
+      border-top: 1px solid var(--border);
+      padding-top: 24px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      font-size: 13px;
+    }
+
+    .cover-meta-item small {
+      display: block;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin-bottom: 4px;
+    }
+
+    .cover-meta-item strong {
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+      color: #FFFFFF;
+      font-weight: 700;
+      line-height: 1.3;
+      margin-top: 36px;
+      margin-bottom: 16px;
+    }
+
+    h1 {
+      font-size: 28px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 12px;
+      page-break-before: always;
+      break-before: page;
+    }
+
+    h2 {
+      font-size: 22px;
+      color: var(--crystal);
+      border-left: 3px solid var(--crystal);
+      padding-left: 14px;
+      margin-top: 48px;
+      page-break-before: auto;
+    }
+
+    h3 {
+      font-size: 18px;
+      color: #F1F5F9;
+    }
+
+    h4 {
+      font-size: 15px;
+      color: var(--crystal);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    p {
+      margin-bottom: 16px;
+      color: #CBD5E1;
+    }
+
+    strong {
+      color: #FFFFFF;
+      font-weight: 600;
+    }
+
+    em {
+      color: var(--crystal);
+      font-style: normal;
+    }
+
+    hr {
+      border: 0;
+      border-top: 1px solid var(--border);
+      margin: 40px 0;
+    }
+
+    ul, ol {
+      margin-bottom: 20px;
+      padding-left: 24px;
+      color: #CBD5E1;
+    }
+
+    li {
+      margin-bottom: 8px;
+    }
+
+    blockquote {
+      border-left: 3px solid var(--primary);
+      background: var(--surface);
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+      font-style: italic;
+      color: #E2E8F0;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 24px 0;
+      font-size: 13.5px;
+      background: var(--surface);
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      page-break-inside: avoid;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: var(--surface-subtle);
+      color: var(--crystal);
+      font-weight: 600;
+      text-transform: uppercase;
+      font-size: 11.5px;
+      letter-spacing: 0.8px;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tr:nth-child(even) td {
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    /* Code & Pre */
+    code {
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 12.5px;
+      background: var(--surface-subtle);
+      color: var(--crystal);
+      padding: 2px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    pre {
+      background: #050B14;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 20px 0;
+      overflow-x: auto;
+      font-family: 'JetBrains Mono', Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.5;
+      color: #E2E8F0;
+      page-break-inside: avoid;
+    }
+
+    pre code {
+      background: transparent;
+      border: 0;
+      padding: 0;
+      color: inherit;
+    }
+
+    /* Figures and Images */
+    figure {
+      margin: 32px 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      text-align: center;
+      page-break-inside: avoid;
+    }
+
+    figure img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 6px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+    }
+
+    figcaption {
+      margin-top: 12px;
+      font-size: 12.5px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    /* Callout Card */
+    .callout {
+      background: rgba(39, 196, 255, 0.06);
+      border: 1px solid rgba(39, 196, 255, 0.2);
+      border-radius: 8px;
+      padding: 18px 20px;
+      margin: 20px 0;
+    }
+
+    .callout h4 {
+      color: var(--crystal);
+      margin-top: 0;
+      margin-bottom: 8px;
+    }
+
+    /* Links */
+    a {
+      color: var(--crystal);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    /* Print Styles */
+    @page {
+      size: A4;
+      margin: 16mm 14mm 16mm 14mm;
+    }
+
+    @media print {
+      body {
+        background: #03060D !important;
+        color: #F8FAFC !important;
+      }
+      .container {
+        max-width: 100%;
+        padding: 0;
+      }
+      h1 {
+        page-break-before: always;
+        break-before: page;
+      }
+      h2, h3, figure, table, pre {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    
+    <!-- Cover Page -->
+    <div class="cover-page">
+      <div class="cover-top">
+        <div class="brand-mark">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          PROOFCOACH <span>AI</span>
+        </div>
+        <div style="font-size: 12px; letter-spacing: 1px; color: var(--text-muted); text-transform: uppercase;">
+          System & Product Manual
+        </div>
+      </div>
+
+      <div class="cover-middle">
+        <span class="doc-kicker">Comprehensive Technical Deep-Dive Report</span>
+        <h1 class="doc-title" style="page-break-before: avoid; border: 0; padding: 0;">PROOFCOACH AI</h1>
+        <div class="doc-tagline">Build it. Prove it. Defend it.</div>
+        <p class="doc-desc">
+          An architectural reverse-engineering, system specification, and product manual documenting 
+          the local-first career preparation platform that connects resume parsing, role evidence graphs, 
+          adaptive interview probing, honest feedback loops, and targeted artifact development.
+        </p>
+      </div>
+
+      <div class="cover-bottom">
+        <div class="cover-meta-item">
+          <small>Author & Project</small>
+          <strong>ProofCoach AI Engineering</strong>
+        </div>
+        <div class="cover-meta-item">
+          <small>System Version</small>
+          <strong>v0.1.0 (Deterministic Vertical Slice)</strong>
+        </div>
+        <div class="cover-meta-item">
+          <small>Classification</small>
+          <strong>Architecture & Product Deep-Dive</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content Body -->
+    <div class="report-content">
+      <h1 id="proofcoach-ai-system-product-deep-dive-report">PROOFCOACH AI — SYSTEM &amp; PRODUCT DEEP-DIVE REPORT</h1>
+<blockquote>
+<p><strong>Tagline:</strong> Build it. Prove it. Defend it.<br />
+<strong>Classification:</strong> Technical Architecture, Product Specification &amp; Reverse-Engineering Manual<br />
+<strong>System Version:</strong> 0.1.0-deterministic-slice (Local-First Architecture)<br />
+<strong>Repository:</strong> <code>sinanoffic/proofcoach-ai</code> (branch: <code>main</code>)<br />
+<strong>Report Date:</strong> September 2026<br />
+<strong>Target Audience:</strong> Developers, System Architects, Hackathon Judges, Educators, and Technical Evaluators  </p>
+</blockquote>
+<hr />
+<h2 id="table-of-contents">TABLE OF CONTENTS</h2>
+<ul>
+<li><a href="#1-executive-overview">Executive Overview</a></li>
+<li><a href="#2-what-is-proofcoach-ai">What Is ProofCoach AI?</a></li>
+<li><a href="#3-product-philosophy--responsible-ai-boundaries">Product Philosophy &amp; Responsible-AI Boundaries</a></li>
+<li><a href="#4-problem--solution-the-crisis-in-career-prep">Problem &amp; Solution: The Crisis in Career Prep</a></li>
+<li><a href="#5-complete-product-map">Complete Product Map</a></li>
+<li><a href="#6-system-architecture">System Architecture</a></li>
+<li><a href="#7-complete-user-journey-a-day-in-the-life">Complete User Journey: A Day in the Life</a></li>
+<li><a href="#8-profile--command-centre">Profile &amp; Command Centre</a></li>
+<li><a href="#9-resume-lab--parser-robustness-engine">Resume Lab &amp; Parser Robustness Engine</a></li>
+<li><a href="#10-target-role-analysis">Target Role Analysis</a></li>
+<li><a href="#11-career-evidence-graph-system">Career Evidence Graph System</a></li>
+<li><a href="#12-live-adaptive-interview-engine">Live Adaptive Interview Engine</a></li>
+<li><a href="#13-evidence-feedback-engine--evidence-lock">Evidence Feedback Engine &amp; Evidence Lock</a></li>
+<li><a href="#14-personalized-learning-plan">Personalized Learning Plan</a></li>
+<li><a href="#15-video-study-planner">Video Study Planner</a></li>
+<li><a href="#16-project-lab-artifact-engineering">Project Lab: Artifact Engineering</a></li>
+<li><a href="#17-career-quest-progression-engine">Career Quest Progression Engine</a></li>
+<li><a href="#18-focus-shield--wellbeing-system">Focus Shield &amp; Wellbeing System</a></li>
+<li><a href="#19-settings-runtime-controls--privacy-purge">Settings, Runtime Controls &amp; Privacy Purge</a></li>
+<li><a href="#20-frontend-architecture--ui-design-system">Frontend Architecture &amp; UI Design System</a></li>
+<li><a href="#21-backend-architecture--service-layer">Backend Architecture &amp; Service Layer</a></li>
+<li><a href="#22-state-management-proofcontext--reactive-loops">State Management: ProofContext &amp; Reactive Loops</a></li>
+<li><a href="#23-data-flow-traces-across-system-boundaries">Data Flow Traces across System Boundaries</a></li>
+<li><a href="#24-persistence-storage--data-lifecycle">Persistence, Storage &amp; Data Lifecycle</a></li>
+<li><a href="#25-apis--local-services-specification">APIs &amp; Local Services Specification</a></li>
+<li><a href="#26-algorithms--internal-logic-implementation">Algorithms &amp; Internal Logic Implementation</a></li>
+<li><a href="#27-security-privacy--local-first-verification">Security, Privacy &amp; Local-First Verification</a></li>
+<li><a href="#28-technology-stack-analysis">Technology Stack Analysis</a></li>
+<li><a href="#29-third-party-services--dependency-verification">Third-Party Services &amp; Dependency Verification</a></li>
+<li><a href="#30-feature-connection-matrix">Feature Connection Matrix</a></li>
+<li><a href="#31-file--code-responsibility-directory">File &amp; Code Responsibility Directory</a></li>
+<li><a href="#32-how-the-system-thinks-the-cognitive-flow">How the System Thinks: The Cognitive Flow</a></li>
+<li><a href="#33-demo-vs-reality-transparent-capability-audit">Demo vs Reality: Transparent Capability Audit</a></li>
+<li><a href="#34-current-technical-limitations">Current Technical Limitations</a></li>
+<li><a href="#35-production-roadmap--future-extensions">Production Roadmap &amp; Future Extensions</a></li>
+<li><a href="#technical-glossary">Technical Glossary</a></li>
+<li><a href="#appendix-verification--test-coverage">Appendix: Verification &amp; Test Coverage</a></li>
+</ul>
+<hr />
+<h2 id="1-executive-overview">1. Executive Overview</h2>
+<h3 id="11-the-core-identity">1.1 The Core Identity</h3>
+<p><strong>ProofCoach AI</strong> is a privacy-first, local-first career preparation platform designed to replace ungrounded resume buzzwords with machine-readable, evidence-linked, and interview-defensible technical competencies. Its guiding philosophy is captured in its three-part operational standard:
+1. <strong>Build it:</strong> Turn theoretical study into tangible software artifacts and code repositories.
+2. <strong>Prove it:</strong> Extract measurable claims, ground them in verifiable work, and test layout readability through transparent parser diagnostics.
+3. <strong>Defend it:</strong> Withstand targeted, adaptive technical interview probing that interrogates baselines, personal contributions, trade-offs, and failure scenarios.</p>
+<h3 id="12-the-central-product-promise">1.2 The Central Product Promise</h3>
+<p>Contemporary job candidates face an acute paradox: while Generative AI enables individuals to produce polished, impressive-sounding resumes in seconds, hiring algorithms and technical interviewers increasingly reject applicants who cannot substantiate their claims under pressure. 
+ProofCoach AI operates under a foundational principle:</p>
+<blockquote>
+<p><em>"A resume should not merely sound impressive. Machines must be able to parse its structure reliably, the candidate must possess verifiable evidence for every quantified claim, and the candidate must be prepared to defend those claims under rigorous technical interrogation."</em></p>
+</blockquote>
+<h3 id="13-key-architectural-pillars">1.3 Key Architectural Pillars</h3>
+<ul>
+<li><strong>Local-First &amp; Privacy-Governed:</strong> The platform runs locally via FastAPI and SQLite, with client-side execution in React 19. It enforces a strict zero-telemetry policy, executes document parsing in RAM, and provides a one-click local data destruction cascade.</li>
+<li><strong>Evidence Lock Safeguard:</strong> Prevents generative hallucination by actively blocking any resume rewrite that introduces unsupported metrics, unverified technologies, or fabricated impact figures.</li>
+<li><strong>Transparent Multi-Metric Diagnostic:</strong> Completely rejects the concept of a single, opaque "AI Readiness Score" or "Universal ATS Score." Instead, it surfaces six independent, observable signals: Parser Robustness, Role Evidence Coverage, Interview Readiness, Claim Verification, Learning Progress, and Career Quest XP.</li>
+<li><strong>Deterministic Vertical Slice:</strong> All core features operate deterministically out of the box without requiring external cloud AI subscriptions, API keys, or cloud infrastructure, while maintaining an optional abstraction layer (<code>AIProvider</code>) for local Ollama instances.</li>
+</ul>
+<hr />
+<h2 id="2-what-is-proofcoach-ai">2. What Is ProofCoach AI?</h2>
+<h3 id="21-the-genesis-of-the-platform">2.1 The Genesis of the Platform</h3>
+<p>ProofCoach AI was engineered to dismantle the superficiality of modern career preparation. Traditional tools fall into three segregated silos:
+1. <em>Resume Optimizers:</em> Focus exclusively on keyword stuffing and stylistic rephrasing, often hallucinating achievements that candidates cannot defend.
+2. <em>Mock Interview Simulators:</em> Ask generic, disconnected behavioral questions (e.g., "Tell me about a time you failed") without contextual grounding in the candidate's actual projects.
+3. <em>Online Learning Platforms:</em> Prescribe generic, open-ended course catalogs without diagnosing the candidate's exact technical gaps or requiring concrete artifact construction.</p>
+<p>ProofCoach AI bridges these silos into a single closed-loop ecosystem. A claim extracted from a resume directly triggers targeted interview questions; weaknesses exposed during the interview immediately generate precise learning goals; learning goals culminate in tangible project tasks in the Project Lab; and finished project artifacts loop back to strengthen the resume under the supervision of Evidence Lock.</p>
+<h3 id="22-target-user-personas">2.2 Target User Personas</h3>
+<p>The system explicitly caters to four distinct user tiers:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Candidate Category</th>
+<th style="text-align: left;">Core Challenge Addressed</th>
+<th style="text-align: left;">ProofCoach Value Driver</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Student</strong></td>
+<td style="text-align: left;">Academic projects lack commercial context and quantified metrics.</td>
+<td style="text-align: left;">Translates coursework into defensible artifacts; extracts baseline measurements.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Fresher / New Grad</strong></td>
+<td style="text-align: left;">Limited professional history leads to weak keyword matching.</td>
+<td style="text-align: left;">Builds verifiable project evidence to bypass ATS parsing hurdles; closes role gaps.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Early-Career Professional</strong></td>
+<td style="text-align: left;">Difficulty differentiating personal contributions from team work.</td>
+<td style="text-align: left;">Pressure-tests ownership, architectural trade-offs, and optimization benchmarks.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Career Switcher</strong></td>
+<td style="text-align: left;">Existing experience does not directly align with new role titles.</td>
+<td style="text-align: left;">Maps transferable skills to target requirements; builds focused bridge projects.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="3-product-philosophy-responsible-ai-boundaries">3. Product Philosophy &amp; Responsible-AI Boundaries</h2>
+<p>ProofCoach AI adheres to strict ethical and operational boundaries that separate verifiable reality from simulated or fabricated assertions.</p>
+<h3 id="31-anti-hallucination-policy-evidence-lock">3.1 Anti-Hallucination Policy (Evidence Lock)</h3>
+<p>Generative AI often produces persuasive lies. If an applicant writes <em>"Made API faster"</em>, common AI rewrites suggest <em>"Reduced API response latency by 45% using Redis caching"</em>. If the candidate never used Redis and never measured latency, they will fail the technical screening. Evidence Lock acts as an immutable gatekeeper:
+- <strong>Green (Safe):</strong> Structural, grammatical, or clarity enhancements with zero new factual claims.
+- <strong>Amber (Confirm):</strong> Semantic changes that elevate ownership (e.g., from <em>"participated"</em> to <em>"architected"</em>), requiring explicit user confirmation.
+- <strong>Red (Blocked):</strong> Introduction of unconfirmed percentages, numbers, tools, or certifications. The system outright blocks these edits.</p>
+<h3 id="32-observable-communication-indicators-vs-fake-emotional-analysis">3.2 Observable Communication Indicators vs. Fake Emotional Analysis</h3>
+<p>ProofCoach AI vehemently rejects the pseudo-scientific practice of facial emotion analysis, voice stress analysis, or visual "confidence scoring" through webcams:
+- <strong>What is measured:</strong> Objective, observable signals—word count, speech duration, filler-word frequency (<code>um</code>, <code>uh</code>, <code>like</code>), answer structure (Problem-Approach-Measurement-Tradeoff), and topic relevance.
+- <strong>What is avoided:</strong> Facial expression tracking, eye-gaze tracking, micro-expression decoding, and AI-inferred emotional traits.</p>
+<h3 id="33-voluntary-gender-non-inference">3.3 Voluntary Gender &amp; Non-Inference</h3>
+<p>The system strictly prohibits inferring candidate demographic characteristics. Gender, ethnicity, and personal background are never guessed from names, resumes, or vocal traits. A voluntary gender field is provided exclusively for candidate-driven preferences (e.g., auto-pairing with a preferred AI voice persona) and remains hidden unless explicitly configured.</p>
+<hr />
+<h2 id="4-problem-solution-the-crisis-in-career-prep">4. Problem &amp; Solution: The Crisis in Career Prep</h2>
+<pre><code class="language-mermaid">flowchart TD
+    subgraph Contemporary Failures
+        F1[&quot;ATS Black Box
+(Silent parsing rejections)&quot;]
+        F2[&quot;Resume Hallucination
+(Unsubstantiated metrics)&quot;]
+        F3[&quot;Generic Interviews
+(Irrelevant trivia)&quot;]
+        F4[&quot;Course Hoarding
+(Passive video watching)&quot;]
+        F5[&quot;Study Burnout
+(No wellbeing pacing)&quot;]
+    end
+
+    subgraph ProofCoach Architectural Solution
+        S1[&quot;Resume Lab
+(8-point parser diagnostic)&quot;]
+        S2[&quot;Evidence Lock &amp; Graph
+(Traceable claim chains)&quot;]
+        S3[&quot;Adaptive Interview
+(Level A-F claim grilling)&quot;]
+        S4[&quot;Project Lab &amp; Video Plan
+(Artifact-based gap closure)&quot;]
+        S5[&quot;Focus Shield
+(2.5h wellbeing cap &amp; timer)&quot;]
+    end
+
+    F1 ==&gt; S1
+    F2 ==&gt; S2
+    F3 ==&gt; S3
+    F4 ==&gt; S4
+    F5 ==&gt; S5
+</code></pre>
+<h3 id="the-five-core-structural-breakdowns">The Five Core Structural Breakdowns:</h3>
+<ol>
+<li><strong>The ATS Black Box:</strong> Traditional candidates submit multi-column or heavily formatted resumes that Applicant Tracking Systems scramble or drop entirely. Candidates receive no actionable feedback on why their document failed extraction.</li>
+<li><em>ProofCoach Fix:</em> An 8-point local diagnostic parser that exposes exactly how machines parse the text, highlighting column ambiguities, missing headers, and unparsed tables.</li>
+<li><strong>Resume Inflation:</strong> Candidates copy AI-generated bullet points featuring grandiose claims (e.g., "Scaled database to 1M QPS"). When asked for p99 latency figures in interviews, they freeze.</li>
+<li><em>ProofCoach Fix:</em> Claim extraction algorithms identify every quantified statement and force the candidate to verify it in the Evidence Graph before locking it into the resume.</li>
+<li><strong>Disconnected Mock Interviews:</strong> Interview platforms ask generic behavioral or leetcode questions completely decoupled from what is written on the candidate's CV.</li>
+<li><em>ProofCoach Fix:</em> The Adaptive Interview engine extracts the candidate's specific claims (e.g., "Reduced latency by 35%") and initiates an evidence challenge specifically probing that sentence.</li>
+<li><strong>Passive Learning:</strong> Students spend hundreds of hours watching tutorials without writing code, retaining very little practical knowledge.</li>
+<li><em>ProofCoach Fix:</em> The Video Study Planner and Project Lab enforce an active 75% learning / 25% practice split, requiring learners to build concrete code artifacts for every studied module.</li>
+<li><strong>Burnout and Overwork:</strong> High-stress job preparation often results in endless, unstructured cramming sessions with diminishing cognitive returns.</li>
+<li><em>ProofCoach Fix:</em> The Focus Shield establishes strict 150-minute study limits, provides session autosaving, and suppresses in-app noise to encourage healthy learning habits.</li>
+</ol>
+<hr />
+<h2 id="5-complete-product-map">5. Complete Product Map</h2>
+<p>ProofCoach AI comprises <strong>13 distinct client routes</strong> organized into four functional quadrants:</p>
+<pre><code class="language-mermaid">flowchart TD
+    subgraph ProofCoach Workspace
+        direction TB
+        subgraph Onboarding &amp; Identity
+            R1[&quot;/ (Landing Page)&quot;]
+            R2[&quot;/onboarding (Candidate Setup)&quot;]
+            R3[&quot;/profile (Command Centre)&quot;]
+            R4[&quot;/dashboard (Legacy Redirect)&quot;]
+        end
+
+        subgraph Evidence &amp; Alignment
+            R5[&quot;/resume (Resume Lab)&quot;]
+            R6[&quot;/role (Target Role)&quot;]
+            R7[&quot;/evidence (Evidence Graph)&quot;]
+        end
+
+        subgraph Verification &amp; Challenge
+            R8[&quot;/interview (Adaptive Interview)&quot;]
+            R9[&quot;/feedback (Evidence Feedback)&quot;]
+        end
+
+        subgraph Growth Loop &amp; Execution
+            R10[&quot;/learn (Learning Plan)&quot;]
+            R11[&quot;/video-plan (Video Study Planner)&quot;]
+            R12[&quot;/project-lab (Project Lab)&quot;]
+            R13[&quot;/quest (Career Quest)&quot;]
+            R14[&quot;/focus (Focus Shield)&quot;]
+        end
+
+        subgraph System Governance
+            R15[&quot;/settings (Privacy &amp; Runtime)&quot;]
+        end
+    end
+
+    R1 --&gt; R2 --&gt; R3
+    R3 --&gt; R5 --&gt; R6 --&gt; R7 --&gt; R8 --&gt; R9 --&gt; R10
+    R10 --&gt; R11
+    R10 --&gt; R12
+    R12 --&gt; R13
+    R10 --&gt; R14
+    R3 -.-&gt; R15
+</code></pre>
+<h3 id="route-index-and-component-responsibilities">Route Index and Component Responsibilities</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Route</th>
+<th style="text-align: left;">View Component</th>
+<th style="text-align: left;">Core Purpose &amp; User Capabilities</th>
+<th style="text-align: left;">Data Dependencies</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>/</code></td>
+<td style="text-align: left;"><code>LandingPage.tsx</code></td>
+<td style="text-align: left;">High-impact product overview, feature cards, deterministic demo entry point.</td>
+<td style="text-align: left;">Static demo fixtures</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/onboarding</code></td>
+<td style="text-align: left;"><code>OnboardingPage.tsx</code></td>
+<td style="text-align: left;">3-step setup: Candidate details, target role selection, practice/interviewer preferences.</td>
+<td style="text-align: left;"><code>ProofContext</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/profile</code></td>
+<td style="text-align: left;"><code>ProfilePage.tsx</code></td>
+<td style="text-align: left;">Comprehensive candidate dossier embedding the central command center metrics.</td>
+<td style="text-align: left;"><code>DemoState.candidate</code>, <code>metrics</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/dashboard</code></td>
+<td style="text-align: left;"><code>DashboardPage.tsx</code></td>
+<td style="text-align: left;">Redirects to <code>/profile</code>; provides the 6-score diagnostic grid, priority alerts, and next 48h tasks.</td>
+<td style="text-align: left;"><code>DemoState.metrics</code>, <code>completed</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/resume</code></td>
+<td style="text-align: left;"><code>ResumePage.tsx</code></td>
+<td style="text-align: left;">Drag-and-drop PDF/DOCX parser, 8-part robustness breakdown, measurable claim detector.</td>
+<td style="text-align: left;">Local FastAPI <code>/api/resume/parse</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/role</code></td>
+<td style="text-align: left;"><code>RolePage.tsx</code></td>
+<td style="text-align: left;">Role selector &amp; custom job description parser; skill coverage matrix &amp; gap extraction.</td>
+<td style="text-align: left;">Local FastAPI <code>/api/role/analyze</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/evidence</code></td>
+<td style="text-align: left;"><code>EvidencePage.tsx</code></td>
+<td style="text-align: left;">Interactive React Flow DAG mapping candidate skills to projects, claims, and role specs.</td>
+<td style="text-align: left;"><code>DemoState.candidate</code>, local API</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/interview</code></td>
+<td style="text-align: left;"><code>InterviewPage.tsx</code></td>
+<td style="text-align: left;">Real-time adaptive interview arena; Web Speech audio synthesis &amp; transcription; level A-F probes.</td>
+<td style="text-align: left;">Local FastAPI <code>/api/interview/*</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/feedback</code></td>
+<td style="text-align: left;"><code>FeedbackPage.tsx</code></td>
+<td style="text-align: left;">Recharts radar breakdown, claim truth loop (before vs after), Evidence Lock rewrite sandbox.</td>
+<td style="text-align: left;"><code>DemoState.evaluation</code>, local API</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/learn</code></td>
+<td style="text-align: left;"><code>LearnPage.tsx</code></td>
+<td style="text-align: left;">Prioritized gap-closure curriculum; verified free documentation links; daily study schedules.</td>
+<td style="text-align: left;">Local FastAPI <code>/api/learning/plan</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/video-plan</code></td>
+<td style="text-align: left;"><code>VideoPlanPage.tsx</code></td>
+<td style="text-align: left;">YouTube embed study orchestrator; timestamped note capture; 5-tier comprehension funnel.</td>
+<td style="text-align: left;"><code>DemoState.video</code>, <code>video.ts</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/project-lab</code></td>
+<td style="text-align: left;"><code>ProjectLabPage.tsx</code></td>
+<td style="text-align: left;">9-stage engineering journey; Kanban task organizer; resume evidence generation.</td>
+<td style="text-align: left;"><code>DemoState.project</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/quest</code></td>
+<td style="text-align: left;"><code>QuestPage.tsx</code></td>
+<td style="text-align: left;">Gamified progression system; 3 tiers (Build, Prove, Perform); transparent XP reward rules.</td>
+<td style="text-align: left;"><code>DemoState.metrics.questPoints</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/focus</code></td>
+<td style="text-align: left;"><code>FocusPage.tsx</code></td>
+<td style="text-align: left;">Distraction-reduced workspace; 150m wellbeing countdown; 20s demo timer; autosave trigger.</td>
+<td style="text-align: left;"><code>localStorage</code> (<code>proofcoach-focus-v1</code>)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>/settings</code></td>
+<td style="text-align: left;"><code>SettingsPage.tsx</code></td>
+<td style="text-align: left;">Dark/light theme switch, runtime mode inspector, JSON progress export, local data purge.</td>
+<td style="text-align: left;"><code>ProofContext</code>, <code>/api/data</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="6-system-architecture">6. System Architecture</h2>
+<p>ProofCoach AI employs a modern, decoupled client-server architecture engineered specifically for local execution, low resource overhead, and strict privacy boundaries.</p>
+<pre><code class="language-mermaid">flowchart TB
+    subgraph Client Architecture [Browser Client: React 19 + Vite 7]
+        direction TB
+        UI[&quot;User Interface (Shell, Panels, ScoreRings)&quot;]
+        Router[&quot;React Router 7 (Lazy-Loaded Routes)&quot;]
+        State[&quot;ProofContext (Zustand-Style React Context)&quot;]
+        StorageEngine[&quot;Browser LocalStorage (proofcoach-demo-v1)&quot;]
+        AudioEngine[&quot;Web Speech API (Synthesis &amp; Recognition)&quot;]
+        Visuals[&quot;React Flow (Graph) + Recharts (Radar/Bars)&quot;]
+
+        UI --&gt; Router
+        Router --&gt; State
+        State &lt;--&gt; StorageEngine
+        UI &lt;--&gt; AudioEngine
+        UI &lt;--&gt; Visuals
+    end
+
+    subgraph TransportLayer [Local Network Transport]
+        HTTP[&quot;HTTP / JSON (RESTful Endpoints)&quot;]
+        FormData[&quot;multipart/form-data (Resume Uploads)&quot;]
+    end
+
+    subgraph Server Architecture [Local Backend: FastAPI + Python 3.11+]
+        direction TB
+        API[&quot;FastAPI Routing Engine (app/main.py)&quot;]
+        CORS[&quot;CORS Middleware (Restricted to localhost:5173)&quot;]
+        Services[&quot;Domain Services (resume, evidence, interview, focus)&quot;]
+        DocParsers[&quot;Document Parsers (PyMuPDF &amp; python-docx)&quot;]
+        AIInterface[&quot;AIProvider Base Interface (app/providers/base.py)&quot;]
+        DeterministicEngine[&quot;DeterministicAIProvider (Zero-Network Demo)&quot;]
+        OllamaEngine[&quot;OllamaProvider (Optional Local LLM)&quot;]
+        DBEngine[&quot;SQLModel / SQLAlchemy ORM&quot;]
+        SQLite[(Local SQLite Database: proofcoach.db)]
+
+        API --&gt; CORS --&gt; Services
+        Services --&gt; DocParsers
+        Services --&gt; AIInterface
+        AIInterface --&gt; DeterministicEngine
+        AIInterface -. optional .-&gt; OllamaEngine
+        Services --&gt; DBEngine --&gt; SQLite
+    end
+
+    State &lt;==&gt;|apiFetch / JSON| HTTP &lt;==&gt; API
+    UI ==&gt;|Upload File| FormData ==&gt; API
+</code></pre>
+<h3 id="61-architectural-subsystems">6.1 Architectural Subsystems</h3>
+<ol>
+<li><strong>Presentation Layer (React 19 SPA):</strong> Utilizes Vite for bundling. Reusable atomic UI primitives (<code>Panel</code>, <code>ScoreRing</code>, <code>StatusPill</code>, <code>PageIntro</code>) ensure visual consistency across both Dark Navy and White Editorial themes.</li>
+<li><strong>State &amp; Reactive Store (<code>ProofContext.tsx</code>):</strong> Maintains application-wide reactivity. Persists non-sensitive candidate configuration, active project state, video notes, and diagnostic scores to <code>localStorage</code> under key <code>proofcoach-demo-v1</code>.</li>
+<li><strong>Transport Layer (<code>api.ts</code>):</strong> Centralizes all HTTP communication with the backend (<code>http://localhost:8000</code>). Automatically handles network timeouts, JSON parsing, error marshalling, and transparent fallback to local demo data if the server is unreachable.</li>
+<li><strong>Backend Application (<code>app/main.py</code>):</strong> Built with FastAPI and Starlette. Implements asynchronous lifespan management to automatically initialize the SQLite database schema on startup without external migration scripts.</li>
+<li><strong>Document Extraction Subsystem (<code>services/resume.py</code>):</strong> Uses PyMuPDF (<code>fitz</code>) for PDF page extraction, character counting, and bounding-box spatial analysis to identify multi-column formatting. Uses <code>python-docx</code> to traverse paragraph and table XML trees.</li>
+<li><strong>Heuristic &amp; Rule Engines:</strong> Pure Python service functions execute claim detection, skill extraction, coverage scoring, answer evaluation, and Evidence Lock filtering using deterministic pattern matching.</li>
+<li><strong>Persistence Subsystem (<code>app/db.py</code> &amp; <code>app/models.py</code>):</strong> Built with SQLModel. Manages local tables for <code>CandidateProfile</code>, <code>ResumeRecord</code>, and <code>InterviewSession</code> within an embedded SQLite database.</li>
+</ol>
+<hr />
+<h2 id="7-complete-user-journey-a-day-in-the-life">7. Complete User Journey: A Day in the Life</h2>
+<p>To understand how ProofCoach operates in practice, consider the end-to-end journey of <strong>Alex</strong>, a second-year AI &amp; Machine Learning student preparing for a Backend Developer role.</p>
+<pre><code class="language-mermaid">sequenceDiagram
+    autonumber
+    actor User as Alex (Candidate)
+    participant UI as ProofCoach UI
+    participant Ctx as ProofContext (Browser)
+    participant API as FastAPI Backend
+    participant Doc as PyMuPDF / docx
+    participant DB as SQLite DB
+
+    Note over User, UI: Phase 1: Onboarding &amp; Setup
+    User-&gt;&gt;UI: Enters Name, Education, Target Role (Backend Dev)
+    UI-&gt;&gt;Ctx: updateCandidate() -&gt; commits to localStorage
+    UI-&gt;&gt;User: Displays Command Centre with initial baseline metrics
+
+    Note over User, UI: Phase 2: Resume Lab &amp; Parsing
+    User-&gt;&gt;UI: Uploads resume.pdf (contains 35% latency claim)
+    UI-&gt;&gt;API: POST /api/resume/parse (multipart form)
+    API-&gt;&gt;Doc: Extract text blocks &amp; layout coordinates
+    Doc--&gt;&gt;API: Returns text + detected two-column layout
+    API-&gt;&gt;API: Calculate Parser Robustness (82/100) &amp; Extract claims
+    API--&gt;&gt;UI: Returns ParserAnalysis JSON
+    UI-&gt;&gt;User: Displays layout warnings &amp; detected claims
+
+    Note over User, UI: Phase 3: Alignment &amp; Evidence Mapping
+    User-&gt;&gt;UI: Selects Target Role (Backend Developer)
+    UI-&gt;&gt;API: POST /api/role/analyze
+    API--&gt;&gt;UI: Required: Python, REST, SQL, Docker, Testing, SysDesign
+    UI-&gt;&gt;Ctx: Matches candidate skills -&gt; identifies 3 gaps (Docker, Testing, SysDesign)
+    User-&gt;&gt;UI: Inspects Career Evidence Graph
+    UI-&gt;&gt;User: Renders interactive DAG showing broken link at Docker
+
+    Note over User, UI: Phase 4: Live Adaptive Interview
+    User-&gt;&gt;UI: Launches Interview for &quot;Reduced latency by 35%&quot;
+    UI-&gt;&gt;API: POST /api/interview/start
+    API-&gt;&gt;DB: Create InterviewSession record
+    API--&gt;&gt;UI: Returns Question 1 (Level D: Evidence Verification)
+    UI-&gt;&gt;User: Speaks question aloud via Web Speech API
+    User-&gt;&gt;UI: Speaks/Types answer (&quot;Baseline was 420ms, used caching...&quot;)
+    User-&gt;&gt;UI: Clicks &quot;Submit evidence&quot;
+    UI-&gt;&gt;API: POST /api/interview/{id}/answer
+    API-&gt;&gt;API: evaluate_answer() -&gt; scores dimensions &amp; structure
+    API-&gt;&gt;DB: Append transcript JSON
+    API--&gt;&gt;UI: Returns evaluation &amp; Next Question (Level E: Trade-offs)
+    UI-&gt;&gt;Ctx: submitInterview(evaluation) -&gt; updates XP (+50 XP)
+
+    Note over User, UI: Phase 5: Feedback &amp; Evidence Lock
+    UI-&gt;&gt;User: Shows radar chart, truth loop (+24% claim confidence)
+    User-&gt;&gt;UI: Tests rewrite: &quot;Reduced API latency by 40%&quot;
+    UI-&gt;&gt;API: POST /api/evidence-lock/rewrite
+    API--&gt;&gt;UI: Status BLOCKED (40% is unsupported)
+    UI-&gt;&gt;User: Shows Red Warning: Evidence Lock blocked fabrication
+
+    Note over User, UI: Phase 6: Targeted Gap Closure
+    User-&gt;&gt;UI: Opens Personalized Learning Plan
+    UI-&gt;&gt;API: POST /api/learning/plan (gaps: Docker, Testing)
+    API--&gt;&gt;UI: Returns structured curriculum &amp; verified doc links
+    User-&gt;&gt;UI: Opens Project Lab -&gt; creates &quot;FastAPI Containerization&quot;
+    User-&gt;&gt;UI: Completes project task -&gt; progress updates to 24%
+    User-&gt;&gt;UI: Activates Focus Shield -&gt; 150m timer counts down
+    UI-&gt;&gt;Ctx: Autosaves session state locally
+</code></pre>
+<hr />
+<h2 id="8-profile-command-centre">8. Profile &amp; Command Centre</h2>
+<h3 id="81-overview-purpose">8.1 Overview &amp; Purpose</h3>
+<p>The Profile &amp; Command Centre (<code>/profile</code>) serves as the central administrative cockpit of ProofCoach AI. It brings together the candidate's personal identity, academic background, target role parameters, daily practice constraints, and interviewer configuration alongside real-time diagnostic performance metrics.</p>
+<figure>
+  <img src="screenshots/profile.png" alt="Profile and Command Centre" />
+  <figcaption>Figure 8.1: Profile & Command Centre dashboard showing candidate dossier, six independent evidence metrics, and next 48-hour action items.</figcaption>
+</figure>
+
+<h3 id="82-three-layer-analysis">8.2 Three-Layer Analysis</h3>
+<h4 id="level-1-simple-explanation-user-view">Level 1 — Simple Explanation (User View)</h4>
+<p>The candidate sees their name, educational status, target career, and daily study goal. Directly below, six diagnostic scores summarize how well their resume parses, how many skills are backed by evidence, how ready they are for interviews, how well their claims hold up, how much learning they have completed, and their current Career Quest rank. A "Next 48 Hours" action panel highlights the single most important task to work on today.</p>
+<h4 id="level-2-internal-explanation-system-logic">Level 2 — Internal Explanation (System Logic)</h4>
+<p>When <code>/profile</code> mounts, the component extracts the <code>candidate</code> object and <code>metrics</code> record from <code>ProofContext</code>. The daily time budget (stored as total minutes, e.g., 150) is formatted into human-readable hours and minutes (<code>2h 30m per day</code>). If the candidate has configured voluntary gender and selected the "Auto Pair" persona, the system renders a voluntary badge; otherwise, demographic fields remain entirely hidden. The embedded <code>DashboardPage</code> calculates the overall readiness distribution across six distinct metrics without ever combining them into a single black-box score.</p>
+<h4 id="level-3-developer-view-technical-specification">Level 3 — Developer View (Technical Specification)</h4>
+<ul>
+<li><strong>Source Files:</strong> <code>frontend/src/pages/ProfilePage.tsx</code>, <code>frontend/src/pages/DashboardPage.tsx</code></li>
+<li><strong>Component Hierarchy:</strong> <code>Shell</code> → <code>ProfilePage</code> → <code>Panel</code>, <code>Detail</code>, <code>DashboardPage</code> → <code>ScoreRing</code>, <code>StatusPill</code></li>
+<li><strong>State Consumed:</strong> <code>state.candidate: Candidate</code>, <code>state.metrics: Record&lt;MetricKey, number&gt;</code>, <code>state.completed: string[]</code></li>
+<li><strong>API Dependencies:</strong> None for initial display; data is served directly from the reactive <code>ProofContext</code> store initialized from <code>localStorage</code>.</li>
+<li><strong>Persistence:</strong> State updates trigger <code>localStorage.setItem('proofcoach-demo-v1', JSON.stringify(next))</code>.</li>
+<li><strong>Failure Modes:</strong> If <code>localStorage</code> is empty or corrupted, <code>loadState()</code> gracefully catches the JSON parse error and populates the view with <code>initialDemoState</code>.</li>
+</ul>
+<hr />
+<h2 id="9-resume-lab-parser-robustness-engine">9. Resume Lab &amp; Parser Robustness Engine</h2>
+<h3 id="91-overview-purpose">9.1 Overview &amp; Purpose</h3>
+<p>The Resume Lab (<code>/resume</code>) provides an unvarnished, transparent diagnostic of how automated applicant-tracking systems and machine parsers interpret an uploaded resume. It explicitly rejects commercial "ATS Score" claims, instead computing a multi-attribute <strong>Parser Robustness Score (0–100)</strong> with spatial layout warnings.</p>
+<figure>
+  <img src="screenshots/resume.png" alt="Resume Lab Interface" />
+  <figcaption>Figure 9.1: Resume Lab interface displaying local file upload dropzone, recovered text preview, 8-part parser checks, and layout warnings.</figcaption>
+</figure>
+
+<h3 id="92-the-eight-point-robustness-rubric">9.2 The Eight-Point Robustness Rubric</h3>
+<p>The local parser evaluates documents across 8 distinct criteria totaling 100 points:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Check Item</th>
+<th style="text-align: center;">Maximum Points</th>
+<th style="text-align: left;">Passing Condition</th>
+<th style="text-align: left;">Warning Condition &amp; Diagnostic</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>1. Text Extraction</strong></td>
+<td style="text-align: center;">20</td>
+<td style="text-align: left;">Text ratio $\ge 0.75$ ($\ge 675$ chars)</td>
+<td style="text-align: left;">Less than 675 chars recovered; points scaled proportionally.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>2. Contact Details</strong></td>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;">Valid email AND phone regex match</td>
+<td style="text-align: left;">Missing email or phone format; awards 5/10.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>3. Recognizable Sections</strong></td>
+<td style="text-align: center;">15</td>
+<td style="text-align: left;">$\ge 3$ standard section headers found</td>
+<td style="text-align: left;">Fewer than 3 headers; awards 3 pts per detected header.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>4. Timeline Dates</strong></td>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;">Year (19xx/20xx) or Month names found</td>
+<td style="text-align: left;">No recognized timeline markers; awards 4/10.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>5. Skill Vocabulary</strong></td>
+<td style="text-align: center;">15</td>
+<td style="text-align: left;">$\ge 4$ recognized catalog skills found</td>
+<td style="text-align: left;">Fewer than 4 skills; awards 3 pts per detected skill.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>6. Projects Section</strong></td>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;">Project section header recovered</td>
+<td style="text-align: left;">Project header missing; awards 0/10.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>7. Two-Column Layout</strong></td>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;">Single column reading order</td>
+<td style="text-align: left;">Two-column layout detected via horizontal block coordinates; penalizes 6 pts (awards 4/10).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>8. Table Content</strong></td>
+<td style="text-align: center;">10</td>
+<td style="text-align: left;">No tables detected (linear text)</td>
+<td style="text-align: left;">Word tables detected; penalizes 6 pts (awards 4/10).</td>
+</tr>
+</tbody>
+</table>
+<h3 id="93-three-layer-analysis">9.3 Three-Layer Analysis</h3>
+<h4 id="level-1-simple-explanation-user-view_1">Level 1 — Simple Explanation (User View)</h4>
+<p>The user drags and drops a PDF or DOCX file (under 8 MB). The screen immediately shows what text the machine was able to extract, highlights any detected skills, and lists every measurable claim found in the document. A large score ring displays the Parser Robustness score with clear warnings (e.g., "Two-column layout warning: reading order may be ambiguous").</p>
+<h4 id="level-2-internal-explanation-system-logic_1">Level 2 — Internal Explanation (System Logic)</h4>
+<ol>
+<li>In local mode, the file is transmitted as a <code>multipart/form-data</code> payload to <code>POST /api/resume/parse</code>.</li>
+<li>PyMuPDF (<code>fitz</code>) opens the PDF stream in RAM. It computes the midpoint of each page (<code>rect.width / 2</code>). If bounding boxes are found on both the left and right of the midpoint simultaneously, <code>layout["two_column"]</code> is set to <code>True</code>.</li>
+<li>For DOCX files, <code>python-docx</code> traverses paragraphs and table cell text, setting <code>layout["tables"] = True</code> if any table objects exist.</li>
+<li>Regex filters scan for measurable claims using a pattern matching percentages, numerical multipliers, and active impact verbs.</li>
+<li>The 8 checks are computed, summed, and returned alongside an 800-character plain-text preview.</li>
+</ol>
+<h4 id="level-3-developer-view-technical-specification_1">Level 3 — Developer View (Technical Specification)</h4>
+<ul>
+<li><strong>Source Files:</strong> <code>frontend/src/pages/ResumePage.tsx</code>, <code>backend/app/services/resume.py</code>, <code>backend/app/main.py</code></li>
+<li><strong>Functions:</strong> <code>parseResume(file: File)</code>, <code>extract_text()</code>, <code>analyze_resume_text()</code>, <code>extract_claims()</code></li>
+<li><strong>Regex Patterns:</strong></li>
+<li><em>Claims:</em> <code>(\d+(?:\.\d+)?\s*%|\d+[kKmM]?\+?\s+(?:users?|requests?|clients?)|(?:reduced|increased|improved|accelerated|saved|grew|led|managed|scaled|optimized))</code></li>
+<li><em>Email:</em> <code>[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}</code></li>
+<li><em>Phone:</em> <code>(?:\+?\d[\s-]?){8,14}</code></li>
+<li><strong>Fallback Behavior:</strong> If the FastAPI backend is offline, <code>ResumePage</code> catches the network error, sets <code>status</code> to a transparent warning, and renders the deterministic demo analysis (82/100 robustness, 2 layout warnings).</li>
+</ul>
+<hr />
+<h2 id="10-target-role-analysis">10. Target Role Analysis</h2>
+<h3 id="101-overview-purpose">10.1 Overview &amp; Purpose</h3>
+<p>The Target Role module (<code>/role</code>) translates ambiguous job postings into clear evidence requirements. Rather than performing simple keyword density counts, it categorizes skills into required competencies, preferred tools, and core engineering responsibilities.</p>
+<figure>
+  <img src="screenshots/role.png" alt="Target Role Interface" />
+  <figcaption>Figure 10.1: Target Role analysis comparing candidate qualifications against Backend Developer requirements, highlighting gaps in Docker, Testing, and System Design.</figcaption>
+</figure>
+
+<h3 id="102-three-layer-analysis">10.2 Three-Layer Analysis</h3>
+<h4 id="level-1-simple-explanation-user-view_2">Level 1 — Simple Explanation (User View)</h4>
+<p>The candidate selects a predefined demo role (e.g., Backend Developer, Frontend Developer, ML Engineer) or pastes a raw job description. The system instantly highlights which required skills the candidate already has evidence for (e.g., Python, REST, SQL) and marks missing skills as red gap indicators (e.g., Docker, Testing, System Design).</p>
+<h4 id="level-2-internal-explanation-system-logic_2">Level 2 — Internal Explanation (System Logic)</h4>
+<p>When the user submits a job description, <code>POST /api/role/analyze</code> searches the text against <code>DEMO_REQUIREMENTS</code>. If custom text is provided, regex word boundaries identify mentioned skills. The candidate's skills are compared case-insensitively against the requirements. The system computes coverage percentage, identifies the strongest evidence area, and extracts the top 3 critical gaps to feed into the learning pipeline.</p>
+<h4 id="level-3-developer-view-technical-specification_2">Level 3 — Developer View (Technical Specification)</h4>
+<ul>
+<li><strong>Source Files:</strong> <code>frontend/src/pages/RolePage.tsx</code>, <code>backend/app/services/evidence.py</code></li>
+<li><strong>Functions:</strong> <code>role_analyze()</code>, <code>analyze_job()</code>, <code>skill_coverage()</code></li>
+<li><strong>Data Models:</strong>
+  <code>typescript
+  interface RoleAnalysis {
+    role: string;
+    required_skills: string[];
+    preferred_skills: string[];
+    responsibilities: string[];
+    competencies: string[];
+    experience_requirement: string;
+  }</code></li>
+<li><strong>Coverage Status Logic:</strong></li>
+<li><code>strong</code>: Skill is present and part of primary evidence (e.g., Python, REST).</li>
+<li><code>evidence</code> / <code>partial</code>: Skill is detected in candidate profile with limited project depth.</li>
+<li><code>missing</code>: Skill is required by role but absent from candidate profile.</li>
+</ul>
+<hr />
+<h2 id="11-career-evidence-graph-system">11. Career Evidence Graph System</h2>
+<h3 id="111-overview-purpose">11.1 Overview &amp; Purpose</h3>
+<p>The Career Evidence Graph (<code>/evidence</code>) visualizes the candidate's professional claims as an interactive Directed Acyclic Graph (DAG). It implements the core principle that a resume bullet point is not verified evidence until it connects a candidate to a skill, a project, a measurable claim, an interview defense, and an explicit job requirement.</p>
+<figure>
+  <img src="screenshots/evidence.png" alt="Career Evidence Graph" />
+  <figcaption>Figure 11.1: Interactive Career Evidence Graph rendered via React Flow, tracing the verified Python path alongside the broken Docker evidence chain.</figcaption>
+</figure>
+
+<h3 id="112-three-layer-analysis">11.2 Three-Layer Analysis</h3>
+<h4 id="level-1-simple-explanation-user-view_3">Level 1 — Simple Explanation (User View)</h4>
+<p>The user explores an interactive visual map with movable nodes. A green path traces supported evidence: Candidate → Python → Flood Prediction API → 35% Latency Claim → Interview Defense → Target Role. A red broken path highlights an evidence gap: Candidate → Docker → No Project Evidence → Gap. Clicking any node opens an Inspector sidebar detailing the node's source, evidence strength, and the exact next action needed.</p>
+<h4 id="level-2-internal-explanation-system-logic_3">Level 2 — Internal Explanation (System Logic)</h4>
+<p>The graph is generated using <code>@xyflow/react</code> (React Flow). Node types are mapped to a custom <code>EvidenceNode</code> component. Node positions ($x, y$) are calculated to enforce a left-to-right progression across six horizontal stages. Edges connecting verified nodes are styled with crystal-blue animated strokes (<code>#27c4ff</code> or <code>#1769ff</code>), while edges connecting missing or unverified nodes are styled with red warning borders and static dashed markers.</p>
+<h4 id="level-3-developer-view-technical-specification_3">Level 3 — Developer View (Technical Specification)</h4>
+<ul>
+<li><strong>Source Files:</strong> <code>frontend/src/pages/EvidencePage.tsx</code>, <code>backend/app/services/evidence.py</code></li>
+<li><strong>Graph Primitives:</strong></li>
+<li>Nodes: <code>c</code> (Candidate), <code>p</code> (Python), <code>d</code> (Docker), <code>project</code> (Flood API), <code>gap</code> (No project), <code>claim</code> (35% claim), <code>interview</code> (Interview session), <code>role</code> (Backend requirement).</li>
+<li>Inspector State: <code>selected: Node | null</code> triggers slide-in panel displaying <code>detail.kind</code>, <code>detail.status</code>, <code>detail.note</code>, and contextual next actions.</li>
+<li>Color Modes: Bound to <code>useTheme()</code> to ensure background grid dots and edge colors automatically adapt between dark navy and light editorial themes.</li>
+</ul>
+<hr />
+<h2 id="12-live-adaptive-interview-engine">12. Live Adaptive Interview Engine</h2>
+<h3 id="121-overview-purpose">12.1 Overview &amp; Purpose</h3>
+<p>The Live Adaptive Interview (<code>/interview</code>) provides a stateful, interactive environment where candidates are interrogated on their specific resume claims. It completely rejects canned, non-contextual interview scripts, instead deploying an adaptive probing progression from Level A through Level F.</p>
+<figure>
+  <img src="screenshots/interview.png" alt="Live Adaptive Interview Workspace" />
+  <figcaption>Figure 12.1: Live Adaptive Interview workspace with real-time timer, Level D question probe, voice transcription controls, and observable communication metrics.</figcaption>
+</figure>
+
+<h3 id="122-the-six-level-adaptive-probing-taxonomy">12.2 The Six-Level Adaptive Probing Taxonomy</h3>
+<pre><code class="language-mermaid">stateDiagram-v2
+    [*] --&gt; LevelA: Candidate Answers
+    LevelA: Level A — Clarification
+(Explain basic terminology)
+    LevelB: Level B — Ownership
+(What was your personal contribution?)
+    LevelC: Level C — Technical Depth
+(Explain internal architecture)
+    LevelD: Level D — Evidence Verification
+(What was baseline &amp; measurement?)
+    LevelE: Level E — Trade-offs
+(Downsides &amp; when to avoid approach)
+    LevelF: Level F — Pressure / Counterfactual
+(System failure &amp; 10x traffic scale)
+
+    LevelD --&gt; LevelE: Strong Answer (Clear baseline + ownership)
+    LevelD --&gt; LevelA: Weak Answer (Vague explanation)
+    LevelE --&gt; LevelF: Deep Trade-off Mastery
+    LevelE --&gt; LevelB: Vague Contribution
+</code></pre>
+<h3 id="123-three-layer-analysis">12.3 Three-Layer Analysis</h3>
+<h4 id="level-1-simple-explanation-user-view_4">Level 1 — Simple Explanation (User View)</h4>
+<p>The user faces an AI interviewer avatar. The current question challenges their 35% latency claim: <em>"What was the original baseline, how did you measure the improvement, and what did you personally change?"</em> The user can click a speaker icon to hear the question spoken aloud, and can respond either by typing into a structured text box or speaking via browser speech recognition. A word counter and session timer track progress.</p>
+<h4 id="level-2-internal-explanation-system-logic_4">Level 2 — Internal Explanation (System Logic)</h4>
+<ol>
+<li>On component mount, the frontend calls <code>POST /api/interview/start</code> to register an active session in SQLite and fetch Question 0 (Level D).</li>
+<li>The user speaks or types. If voice is activated, the Web Speech API (<code>webkitSpeechRecognition</code>) streams interim transcripts into local state.</li>
+<li>Upon clicking "Submit evidence", the text is transmitted to <code>POST /api/interview/{session_id}/answer</code>.</li>
+<li>The backend evaluation service parses the answer for baseline markers (<code>\d+\s*(?:ms|seconds?|%)</code>), measurement terms (<code>benchmark</code>, <code>postman</code>, <code>p95</code>), personal pronouns (<code>I changed</code>, <code>I implemented</code>), trade-off terms (<code>cache invalidation</code>, <code>memory cost</code>), and filler words (<code>um</code>, <code>uh</code>, <code>like</code>).</li>
+<li>A detailed evaluation payload is returned, updating the session transcript and determining the next question level.</li>
+</ol>
+<h4 id="level-3-developer-view-technical-specification_4">Level 3 — Developer View (Technical Specification)</h4>
+<ul>
+<li><strong>Source Files:</strong> <code>frontend/src/pages/InterviewPage.tsx</code>, <code>backend/app/services/interview.py</code>, <code>backend/app/main.py</code></li>
+<li><strong>State Properties:</strong> <code>state.answer: string</code>, <code>state.interviewSessionId: number | null</code>, <code>currentQ: { level, label, reason, text }</code></li>
+<li><strong>Browser APIs Used:</strong> <code>window.speechSynthesis</code> (for text-to-speech), <code>window.SpeechRecognition</code> / <code>window.webkitSpeechRecognition</code> (for voice input).</li>
+<li><strong>Communication Indicators Observed:</strong></li>
+<li><code>word_count</code>: Total tokens extracted via <code>[\w'-]+</code>.</li>
+<li><code>filler_words</code>: Count of <code>um</code>, <code>uh</code>, <code>like</code>, <code>basically</code>.</li>
+<li><code>answer_structure</code>: Classified as <code>clear</code> if $\ge 45$ words with structured markers; otherwise <code>developing</code>.</li>
+<li><code>relevance</code>: Evaluated based on domain keywords (<code>latency</code>, <code>api</code>, <code>cache</code>, <code>measure</code>).</li>
+</ul>
+<hr />
+<h2 id="13-evidence-feedback-engine-evidence-lock">13. Evidence Feedback Engine &amp; Evidence Lock</h2>
+<h3 id="131-overview-purpose">13.1 Overview &amp; Purpose</h3>
+<p>The Feedback Engine (<code>/feedback</code>) delivers structured, multi-dimensional feedback following an interview. It features the <strong>Resume Truth Loop</strong>, which quantifies how the interview changed demonstrated claim confidence, and <strong>Evidence Lock</strong>, an interactive sandbox that protects candidates from generating fraudulent resume bullets.</p>
+<figure>
+  <img src="screenshots/feedback.png" alt="Evidence Feedback Dashboard" />
+  <figcaption>Figure 13.1: Evidence Feedback dashboard featuring the Claim Truth Loop (58% to 82%), 6-dimension radar chart, and Evidence Lock rewrite test.</figcaption>
+</figure>
+
+<h3 id="132-three-layer-analysis">13.2 Three-Layer Analysis</h3>
+<h4 id="level-1-simple-explanation-user-view_5">Level 1 — Simple Explanation (User View)</h4>
+<p>The screen displays a radar chart covering 6 dimensions: Fundamentals, Problem Solving, Ownership, Communication, Evidence, and Learning. The Resume Truth Loop shows that demonstrated confidence in the 35% latency claim increased from 58% to 82%. In the Evidence Lock box, the user can test two rewrites: a safe version ("Optimized API response performance") which is approved, and an unsupported version ("Reduced API latency by 40%") which is immediately blocked.</p>
+<h4 id="level-2-internal-explanation-system-logic_5">Level 2 — Internal Explanation (System Logic)</h4>
+<p>The 82% claim confidence score does not claim independent real-world truth; it reflects the candidate's demonstrated ability to substantiate their baseline (420 ms) and measurement method (Postman runs). Evidence Lock enforces rules via <code>assess_rewrite()</code> in <code>backend/app/services/evidence_lock.py</code>:
+- Checks proposed text against confirmed numerical facts and technology keywords (<code>TECH_TERMS</code>).
+- If an unsupported number (e.g., <code>40%</code>) or technology (e.g., <code>Kubernetes</code>) appears in the rewrite without existing in the original bullet or confirmed facts, <code>status</code> returns <code>blocked</code> with a red UI token.
+- If only stylistic words change, <code>status</code> returns <code>safe</code>.</p>
+<h4 id="level-3-developer-view-technical-specification_5">Level 3 — Developer View (Technical Specification)</h4>
+<ul>
+<li><strong>Source Files:</strong> <code>frontend/src/pages/FeedbackPage.tsx</code>, <code>backend/app/services/evidence_lock.py</code></li>
+<li><strong>Visual Primitives:</strong> Recharts <code>&lt;RadarChart&gt;</code> wrapped inside <code>&lt;ResponsiveContainer width="100%" height={285}&gt;</code>.</li>
+<li><strong>Dimensions Evaluated:</strong>
+  <code>python
+  dimensions = {
+      "baseline": "yes" if baseline else "partial",
+      "measurement": "yes" if measurement and has_digits else "partial" if measurement else "weak",
+      "personal_contribution": "yes" if ownership else "partial",
+      "trade_offs": "yes" if tradeoffs else "weak",
+      "scaling_knowledge": "yes" if scaling else "weak",
+  }</code></li>
+<li><strong>Confidence Formula:</strong>
+  $$    ext{Confidence}<em ext_yes="ext{yes">{   ext{after}} = \min(88, 58 + 8   imes N</em>)$$}} + 4   imes N_{    ext{partial}</li>
+</ul>
+<hr />
+<h2 id="14-personalized-learning-plan">14. Personalized Learning Plan</h2>
+<h3 id="141-overview-purpose">14.1 Overview &amp; Purpose</h3>
+<p>The Learning Plan (<code>/learn</code>) closes the loop between interview failures and technical remediation. Instead of recommending 40-hour video courses, it generates concise, high-priority learning tracks targeting the candidate's exact role gaps.</p>
+<figure>
+  <img src="screenshots/learn.png" alt="Personalized Learning Plan" />
+  <figcaption>Figure 14.1: Personalized Learning Plan prioritizing Docker (Role Blocker), Testing (Gap), and System Design (Gap) with direct links to official documentation.</figcaption>
+</figure>
+
+<h3 id="142-three-layer-analysis">14.2 Three-Layer Analysis</h3>
+<h4 id="level-1-simple-explanation-user-view_6">Level 1 — Simple Explanation (User View)</h4>
+<p>The user sees their target daily study time (2h 30m / day) divided into a 75% learning / 25% practice split. Three prioritized cards address their gaps: Priority 1 (Docker - Role Blocker), Priority 2 (Testing - Gap), and Priority 3 (System Design - Gap). Each card provides a direct link to free, authoritative documentation (e.g., Docker Get Started, pytest docs) and assigns a mandatory artifact to build.</p>
+<h4 id="level-2-internal-explanation-system-logic_6">Level 2 — Internal Explanation (System Logic)</h4>
+<p>The component dispatches <code>POST /api/learning/plan</code> with the candidate's identified gaps and daily time budget. The backend maps each gap to verified primary resources in <code>RESOURCE_CATALOG</code>. Crucially, every task enforces an active triad:
+1. <strong>Learn:</strong> Study official documentation.
+2. <strong>Build Evidence:</strong> Create a concrete code artifact (e.g., "Containerize the FastAPI backend").
+3. <strong>Practice:</strong> Complete a 5-question PYQ-style practice set.</p>
+<h4 id="level-3-developer-view-technical-specification_6">Level 3 — Developer View (Technical Specification)</h4>
+<ul>
+<li><strong>Source Files:</strong> <code>frontend/src/pages/LearnPage.tsx</code>, <code>backend/app/services/learning.py</code></li>
+<li><strong>State Binding:</strong> Dynamic time allocation calculated as:
+  <code>typescript
+  const hours = Math.floor(state.candidate.dailyMinutes / 60);
+  const mins = state.candidate.dailyMinutes % 60;</code></li>
+<li><strong>Source Honesty Policy:</strong> Every external resource explicitly displays its provider, estimated time, and cost. If a certificate is not verified, the UI states: <em>"These recommendations do not claim a certificate."</em></li>
+</ul>
+<hr />
+<h2 id="15-video-study-planner">15. Video Study Planner</h2>
+<h3 id="151-overview-purpose">15.1 Overview &amp; Purpose</h3>
+<p>The Video Study Planner (<code>/video-plan</code>) tackles the pervasive problem of "tutorial hell" by converting passive video consumption into an active, structured study schedule. It enforces an authorized YouTube embed player, daily video chunking, and timestamped note-taking.</p>
+<figure>
+  <img src="screenshots/video-plan.png" alt="Video Study Planner" />
+  <figcaption>Figure 15.1: Video Study Planner featuring authorized YouTube embed, current objective card, note-taking timeline, and 5-stage comprehension funnel.</figcaption>
+</figure>
+
+<h3 id="152-three-layer-analysis">15.2 Three-Layer Analysis</h3>
+<h4 id="level-1-simple-explanation-user-view_7">Level 1 — Simple Explanation (User View)</h4>
+<p>The candidate pastes a YouTube tutorial link. The planner embeds the video using privacy-enhanced mode (<code>youtube-nocookie.com</code>). As they watch, they can click "Add note" or "Mark important" to save timestamped notes. A 5-stage comprehension funnel tracks progress across: Watched (45%) → Understood (30%) → Practiced (15%) → Applied (10%) → Proven (5%). A daily planner breaks a multi-hour tutorial into manageable day-by-day segments.</p>
+<h4 id="level-2-internal-explanation-system-logic_7">Level 2 — Internal Explanation (System Logic)</h4>
+<p>The component validates the URL using <code>videoId()</code> in <code>services/video.ts</code>, strictly requiring an 11-character alphanumeric video ID from <code>youtu.be</code> or <code>youtube.com</code>. Daily sessions are computed using the formula:
+$$  ext{Learning Budget} =  ext{round}( ext{Daily Minutes}  imes 0.75)$$
+$$  ext{Days Required} = \lceil     ext{Duration} /     ext{Learning Budget} 
+ceil$$
+Notes taken during playback are committed to <code>state.video.notes</code> in <code>ProofContext</code> and survive page refreshes.</p>
+<h4 id="level-3-developer-view-technical-specification_7">Level 3 — Developer View (Technical Specification)</h4>
+<ul>
+<li><strong>Source Files:</strong> <code>frontend/src/pages/VideoPlanPage.tsx</code>, <code>frontend/src/services/video.ts</code>, <code>backend/app/services/learning.py</code></li>
+<li><strong>State Data Model:</strong>
+  <code>typescript
+  interface VideoNote {
+    id: string;
+    timestamp: number;
+    topic: string;
+    text: string;
+  }
+  interface VideoState {
+    watched: number;
+    understood: number;
+    practiced: number;
+    applied: number;
+    proven: number;
+    notes: VideoNote[];
+  }</code></li>
+<li><strong>Copyright &amp; Privacy Boundary:</strong> The application never downloads, scrapes, or stores copyrighted video streams. It uses the official YouTube iframe embed with <code>referrerPolicy="strict-origin-when-cross-origin"</code>.</li>
+</ul>
+<hr />
+<h2 id="16-project-lab-artifact-engineering">16. Project Lab: Artifact Engineering</h2>
+<h3 id="161-overview-purpose">16.1 Overview &amp; Purpose</h3>
+<p>The Project Lab (<code>/project-lab</code>) is ProofCoach AI's execution engine. It ensures that students and freshers do not merely accumulate theoretical knowledge, but build, test, and document real software artifacts that can withstand technical scrutiny.</p>
+<figure>
+  <img src="screenshots/project-lab.png" alt="Project Lab Dashboard" />
+  <figcaption>Figure 16.1: Project Lab workspace displaying the 9-stage engineering journey, dynamic task board (NEXT / THIS WEEK / LATER), and interview defense preview.</figcaption>
+</figure>
+
+<h3 id="162-the-nine-stage-engineering-journey">16.2 The Nine-Stage Engineering Journey</h3>
+<p>Every project progresses through an industry-standard development lifecycle:</p>
+<pre><code class="language-mermaid">flowchart LR
+    S1[1. IDEA] --&gt; S2[2. RESEARCH] --&gt; S3[3. PLAN] --&gt; S4[4. BUILD] --&gt; S5[5. TEST] --&gt; S6[6. IMPROVE] --&gt; S7[7. DOCUMENT] --&gt; S8[8. DEPLOY] --&gt; S9[9. DEFEND]
+</code></pre>
+<h3 id="163-three-layer-analysis">16.3 Three-Layer Analysis</h3>
+<h4 id="level-1-simple-explanation-user-view_8">Level 1 — Simple Explanation (User View)</h4>
+<p>The user manages their active project (e.g., "AI SafeRoute - Flood Prediction API"). An engineering progress bar shows completion (24%). A Kanban task board divides actions into NEXT, THIS WEEK, LATER, and COMPLETED. Clicking any task marks it complete, immediately advancing project progress. A "Defend This Project" panel previews three core questions that an interviewer will ask about the project.</p>
+<h4 id="level-2-internal-explanation-system-logic_8">Level 2 — Internal Explanation (System Logic)</h4>
+<p>When a candidate checks off a task, <code>completeTask(taskId)</code> is dispatched to <code>ProofContext</code>. The task's stage transitions to <code>COMPLETED</code>, its <code>completed</code> boolean flag is set to <code>true</code>, and overall project progress advances incrementally:
+$$  ext{Progress}<em ext_current="ext{current">{ ext{next}} = \min(100,  ext{Progress}</em> + 4)$$
+Completed tasks with attached evidence strings automatically populate the "Project Evidence" panel, providing one-click export into the Resume Lab.}</p>
+<h4 id="level-3-developer-view-technical-specification_8">Level 3 — Developer View (Technical Specification)</h4>
+<ul>
+<li><strong>Source Files:</strong> <code>frontend/src/pages/ProjectLabPage.tsx</code>, <code>frontend/src/types.ts</code></li>
+<li><strong>State Data Model:</strong>
+  <code>typescript
+  interface ProjectTask {
+    id: string;
+    title: string;
+    stage: 'NEXT' | 'THIS WEEK' | 'LATER' | 'COMPLETED';
+    completed: boolean;
+    priority?: string;
+    evidence?: string;
+    skill?: string;
+  }
+  interface ProjectState {
+    id: string;
+    name: string;
+    goal: string;
+    stage: string;
+    progress: number;
+    tasks: ProjectTask[];
+  }</code></li>
+<li><strong>New Project Wizard:</strong> If <code>state.project</code> is null, <code>ProjectLabPage</code> renders an embedded two-step setup wizard allowing the candidate to initialize a custom project with custom objectives.</li>
+</ul>
+<hr />
+<h2 id="17-career-quest-progression-engine">17. Career Quest Progression Engine</h2>
+<h3 id="171-overview-purpose">17.1 Overview &amp; Purpose</h3>
+<p>Career Quest (<code>/quest</code>) gamifies the career preparation journey through transparent, merit-based Evidence XP. It explicitly avoids dark-pattern gamification (e.g., daily login streaks or superficial clicks), rewarding only verified, artifact-backed achievements.</p>
+<figure>
+  <img src="screenshots/quest.png" alt="Career Quest Progression" />
+  <figcaption>Figure 17.1: Career Quest progression screen displaying current Evidence XP (185 XP), Level 2 Pathfinder rank, and transparent point rules.</figcaption>
+</figure>
+
+<h3 id="172-the-three-quest-tiers-xp-rules">17.2 The Three Quest Tiers &amp; XP Rules</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Quest Level</th>
+<th style="text-align: left;">Name</th>
+<th style="text-align: left;">Theme</th>
+<th style="text-align: left;">Key Included Work</th>
+<th style="text-align: center;">Level Reward</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><strong>Level 1</strong></td>
+<td style="text-align: left;"><strong>Build</strong></td>
+<td style="text-align: left;">Foundation</td>
+<td style="text-align: left;">Upload resume, fix parser warnings, select role, map evidence graph.</td>
+<td style="text-align: center;">100 XP</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Level 2</strong></td>
+<td style="text-align: left;"><strong>Prove</strong></td>
+<td style="text-align: left;">Competency</td>
+<td style="text-align: left;">Verify claims, complete learning modules, build gap artifacts, Evidence Lock rewrite.</td>
+<td style="text-align: center;">150 XP</td>
+</tr>
+<tr>
+<td style="text-align: center;"><strong>Level 3</strong></td>
+<td style="text-align: left;"><strong>Perform</strong></td>
+<td style="text-align: left;">Mastery</td>
+<td style="text-align: left;">Live interview defense, deep trade-off interrogation, final simulated interview.</td>
+<td style="text-align: center;">250 XP</td>
+</tr>
+</tbody>
+</table>
+<h4 id="transparent-action-linked-rewards">Transparent Action-Linked Rewards:</h4>
+<ul>
+<li>Resume fix: <code>+20 XP</code></li>
+<li>Evidence added: <code>+25 XP</code></li>
+<li>Lesson completed: <code>+10 XP</code></li>
+<li>Quiz passed: <code>+15 XP</code></li>
+<li>Adaptive Interview completed: <code>+30 XP</code> (seeded demo awards <code>+50 XP</code> for comprehensive defense)</li>
+<li>Claim improved: <code>+20 XP</code></li>
+<li>Complete tier milestone: <code>+100 XP</code></li>
+</ul>
+<h3 id="173-three-layer-analysis">17.3 Three-Layer Analysis</h3>
+<ul>
+<li><strong>Level 1 (User View):</strong> The user tracks their Evidence XP (185 XP) and rank ("Pathfinder - Level 2"). Level 1 is marked Complete with green checkmarks, Level 2 is Active, and Level 3 is Locked until Level 2 tasks are fulfilled.</li>
+<li><strong>Level 2 (Internal Logic):</strong> XP is stored in <code>state.metrics.questPoints</code>. Progression percentage is derived as <code>questPoints / 4</code>. Submitting an interview automatically increments <code>questPoints</code> by 50 in <code>submitInterview()</code>.</li>
+<li><strong>Level 3 (Developer View):</strong> Defined in <code>frontend/src/pages/QuestPage.tsx</code> and seeded via <code>questLevels</code> in <code>frontend/src/data/demo.ts</code>.</li>
+</ul>
+<hr />
+<h2 id="18-focus-shield-wellbeing-system">18. Focus Shield &amp; Wellbeing System</h2>
+<h3 id="181-overview-purpose">18.1 Overview &amp; Purpose</h3>
+<p>Focus Shield (<code>/focus</code>) provides an intensive, distraction-minimized study environment with an integrated wellbeing governor. It ensures that candidates maintain healthy learning habits by enforcing a 2.5-hour maximum continuous study session with automatic progress autosaving.</p>
+<figure>
+  <img src="screenshots/focus.png" alt="Focus Shield Workspace" />
+  <figcaption>Figure 18.1: Focus Shield workspace showing circular countdown clock, 20-second demo toggle, and honest Future Mobile Integration disclaimer.</figcaption>
+</figure>
+
+<h3 id="182-three-layer-analysis">18.2 Three-Layer Analysis</h3>
+<h4 id="level-1-simple-explanation-user-view_9">Level 1 — Simple Explanation (User View)</h4>
+<p>The screen strips away distracting navigation elements, presenting a large circular countdown timer set to a 2h 30m wellbeing limit. Controls allow the user to Start, Pause, Finish, or Reset the session. For quick demonstrations, a "Demo timer mode" toggle compresses the 2.5-hour limit to 20 seconds. An Emergency Contact simulator is provided, accompanied by an honest notice explaining that web browsers cannot block phone calls.</p>
+<h4 id="level-2-internal-explanation-system-logic_9">Level 2 — Internal Explanation (System Logic)</h4>
+<p>The timer runs client-side via a 1000 ms <code>setInterval</code> loop. The CSS conical gradient (<code>--progress</code>) dynamically visualizes elapsed percentage:
+$$  ext{Progress \%} =  ext{round}\left(rac{   ext{Elapsed}}{  ext{Limit}}
+ight)   imes 100$$
+When <code>elapsed &gt;= limit</code>, the session ends automatically, <code>running</code> is set to <code>false</code>, <code>ended</code> is set to <code>true</code>, and state is autosaved to <code>localStorage</code> under <code>proofcoach-focus-v1</code>.</p>
+<h4 id="level-3-developer-view-technical-specification_9">Level 3 — Developer View (Technical Specification)</h4>
+<ul>
+<li><strong>Source Files:</strong> <code>frontend/src/pages/FocusPage.tsx</code>, <code>backend/app/services/focus.py</code></li>
+<li><strong>Storage Key:</strong> <code>proofcoach-focus-v1</code> storing <code>{ demo: boolean, elapsed: number, ended: boolean }</code>.</li>
+<li><strong>Localhost Optimization:</strong> To eliminate unnecessary network round-trips every second, the timer loop executes entirely in the browser. The backend endpoint <code>POST /api/focus/status</code> remains available for server-side state synchronization.</li>
+<li><strong>Honest System Boundary:</strong> The UI features an explicit warning: <em>"A browser website cannot guarantee blocking WhatsApp, phone calls, or OS notifications. This prototype does not fake that capability."</em></li>
+</ul>
+<hr />
+<h2 id="19-settings-runtime-controls-privacy-purge">19. Settings, Runtime Controls &amp; Privacy Purge</h2>
+<h3 id="191-overview-purpose">19.1 Overview &amp; Purpose</h3>
+<p>The Settings module (<code>/settings</code>) implements ProofCoach AI's core privacy and data ownership guarantees. It provides instant theme switching, runtime mode inspection, complete data export, and an irreversible one-click data destruction mechanism.</p>
+<figure>
+  <img src="screenshots/settings.png" alt="Settings & Privacy Panel" />
+  <figcaption>Figure 19.1: Settings and Privacy panel showing appearance options, runtime diagnostic indicators, JSON export, and Delete My Data purge modal.</figcaption>
+</figure>
+
+<h3 id="192-three-layer-analysis">19.2 Three-Layer Analysis</h3>
+<h4 id="level-1-simple-explanation-user-view_10">Level 1 — Simple Explanation (User View)</h4>
+<p>The user can toggle between Dark Navy and White Editorial themes. Runtime cards confirm that the system is operating in Local-First Demo Mode with zero analytics tracking. Three action buttons allow the candidate to export their entire progress as a JSON file, reset the deterministic demo to its original state, or permanently delete all local data.</p>
+<h4 id="level-2-internal-explanation-system-logic_10">Level 2 — Internal Explanation (System Logic)</h4>
+<ol>
+<li><strong>JSON Export:</strong> Serializes the complete reactive <code>DemoState</code> object into a formatted JSON Blob and triggers an automated browser download for <code>proofcoach-progress.json</code>.</li>
+<li><strong>Deterministic Reset:</strong> Calls <code>resetDemo()</code> in <code>ProofContext</code>, replacing the local state with <code>initialDemoState</code>.</li>
+<li><strong>Data Purge Cascade:</strong> Clicking "Delete my data" opens an accessible confirmation modal. Upon confirmation, the application dispatches <code>DELETE /api/data</code> to the FastAPI backend (which truncates all rows in <code>CandidateProfile</code>, <code>ResumeRecord</code>, and <code>InterviewSession</code>), purges <code>localStorage</code> keys <code>proofcoach-demo-v1</code> and <code>proofcoach-focus-v1</code>, and navigates the user back to the landing page.</li>
+</ol>
+<h4 id="level-3-developer-view-technical-specification_10">Level 3 — Developer View (Technical Specification)</h4>
+<ul>
+<li><strong>Source Files:</strong> <code>frontend/src/pages/SettingsPage.tsx</code>, <code>frontend/src/services/api.ts</code>, <code>backend/app/main.py</code></li>
+<li><strong>Data Purge Implementation:</strong>
+  <code>python
+  @app.delete("/api/data")
+  def delete_my_data(session: Session = Depends(get_session)) -&gt; dict:
+      for model in (InterviewSession, ResumeRecord, CandidateProfile):
+          session.exec(delete(model))
+      session.commit()
+      return {"deleted": ["profile", "resume", "interview transcript"], "local_database_retained_empty": True}</code></li>
+</ul>
+<hr />
+<h2 id="20-frontend-architecture-ui-design-system">20. Frontend Architecture &amp; UI Design System</h2>
+<h3 id="201-directory-layout-component-structure">20.1 Directory Layout &amp; Component Structure</h3>
+<p>The frontend is constructed using React 19, TypeScript 5.9, and Vite 7. The project maintains an intentional separation between reusable UI primitives, global shell layouts, route-level page views, and state providers.</p>
+<pre><code>frontend/
+├── public/
+│   ├── assets/
+│   │   ├── phoenix-watermark.jpg     # Official Blue Crystal Phoenix asset
+│   │   └── favicon.svg
+├── src/
+│   ├── components/                   # Shared UI primitives &amp; Layout Shell
+│   │   ├── Brand.tsx                 # Phoenix logo &amp; typography lockup
+│   │   ├── Shell.tsx                 # Global responsive sidebar, topbar &amp; navigation
+│   │   ├── ThemeToggle.tsx           # Accessible light/dark theme switch
+│   │   └── UI.tsx                    # Atomic design tokens (Panel, ScoreRing, StatusPill)
+│   ├── context/                      # React Context providers
+│   │   ├── ProofContext.tsx          # Central application state &amp; persistence
+│   │   └── ThemeContext.tsx          # Dual-theme engine &amp; preference sync
+│   ├── data/
+│   │   └── demo.ts                   # Deterministic fixtures &amp; initial demo state
+│   ├── pages/                        # Lazy-loaded route components (13 total)
+│   ├── services/                     # Client-side utility functions &amp; HTTP client
+│   │   ├── api.ts                    # Fetch wrapper targeting localhost:8000
+│   │   ├── theme.ts                  # Theme resolution &amp; local storage engine
+│   │   └── video.ts                  # YouTube URL parser &amp; ID extractor
+│   ├── App.tsx                       # React Router configuration &amp; route definitions
+│   ├── main.tsx                      # DOM entry point &amp; provider bootstrapping
+│   ├── styles.css                    # Semantic CSS variables &amp; responsive rules
+│   └── types.ts                      # Strict TypeScript domain interfaces
+├── package.json
+└── vite.config.ts
+</code></pre>
+<h3 id="202-design-system-dual-theme-tokens">20.2 Design System &amp; Dual-Theme Tokens</h3>
+<p>The interface utilizes a technical, crystal-inspired aesthetic. It supports two full-palette themes powered by CSS custom properties defined in <code>styles.css</code>.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Semantic Variable</th>
+<th style="text-align: left;">Dark Navy Theme (Default)</th>
+<th style="text-align: left;">White Editorial Theme</th>
+<th style="text-align: left;">Semantic Role</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>--bg</code></td>
+<td style="text-align: left;"><code>#03060D</code> (Deep Void Navy)</td>
+<td style="text-align: left;"><code>#F7F9FC</code> (Cool Editorial White)</td>
+<td style="text-align: left;">Application canvas background</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--surface</code></td>
+<td style="text-align: left;"><code>#0A111D</code> (Glass Card Surface)</td>
+<td style="text-align: left;"><code>#FFFFFF</code> (Pure Crisp White)</td>
+<td style="text-align: left;">Card and panel containers</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--surface-subtle</code></td>
+<td style="text-align: left;"><code>#0F172A</code></td>
+<td style="text-align: left;"><code>#F1F5F9</code></td>
+<td style="text-align: left;">Table rows, code blocks, dividers</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--text</code></td>
+<td style="text-align: left;"><code>#F4F8FF</code> (High-Contrast White)</td>
+<td style="text-align: left;"><code>#111827</code> (Deep Editorial Slate)</td>
+<td style="text-align: left;">Primary headlines and body copy</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--muted</code></td>
+<td style="text-align: left;"><code>#7E8FA6</code></td>
+<td style="text-align: left;"><code>#64748B</code></td>
+<td style="text-align: left;">Subtitles, timestamps, placeholders</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--primary</code></td>
+<td style="text-align: left;"><code>#1877FF</code> (Vibrant Electric Blue)</td>
+<td style="text-align: left;"><code>#1769FF</code> (Refined Ink Blue)</td>
+<td style="text-align: left;">Primary action buttons and focus rings</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--crystal</code></td>
+<td style="text-align: left;"><code>#27C4FF</code> (Luminous Cyan)</td>
+<td style="text-align: left;"><code>#007DBD</code> (Deep Precision Cyan)</td>
+<td style="text-align: left;">Brand accents, active meters, graph nodes</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--success</code></td>
+<td style="text-align: left;"><code>#22C77A</code> (Verified Emerald)</td>
+<td style="text-align: left;"><code>#16875F</code> (Forest Green)</td>
+<td style="text-align: left;">Passing scores, verified claims</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--warning</code></td>
+<td style="text-align: left;"><code>#F2B84B</code> (Amber Alert)</td>
+<td style="text-align: left;"><code>#A66413</code> (Warm Ochre)</td>
+<td style="text-align: left;">Partial evidence, layout warnings</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>--danger</code></td>
+<td style="text-align: left;"><code>#F26161</code> (Critical Coral)</td>
+<td style="text-align: left;"><code>#D64545</code> (Crimson Warning)</td>
+<td style="text-align: left;">Blocked claims, role blockers</td>
+</tr>
+</tbody>
+</table>
+<h4 id="preventing-flash-of-unstyled-theme-fouc">Preventing Flash of Unstyled Theme (FOUC):</h4>
+<p>In <code>index.html</code>, an inline bootstrap script executes synchronously before React mounts:</p>
+<pre><code class="language-javascript">const saved = localStorage.getItem('proofcoach-theme');
+const theme = saved === 'light' || saved === 'dark' ? saved : 'dark';
+document.documentElement.setAttribute('data-theme', theme);
+</code></pre>
+<hr />
+<h2 id="21-backend-architecture-service-layer">21. Backend Architecture &amp; Service Layer</h2>
+<h3 id="211-module-structure-separation-of-concerns">21.1 Module Structure &amp; Separation of Concerns</h3>
+<p>The backend is built with FastAPI and Python 3.11+. It follows a pure-function domain service pattern where business logic is decoupled from HTTP transport.</p>
+<pre><code>backend/
+├── app/
+│   ├── config.py             # Pydantic Settings (CORS, demo mode, ports)
+│   ├── db.py                 # SQLite database engine &amp; session dependency
+│   ├── main.py               # FastAPI application, route handlers &amp; lifespan
+│   ├── models.py             # SQLModel persistence entities (table=True)
+│   ├── schemas.py            # Pydantic v2 request/response schemas
+│   ├── seed.py               # Deterministic resume text &amp; state fixtures
+│   ├── providers/            # AI Provider abstraction layer
+│   │   ├── base.py           # Abstract base class for AI operations
+│   │   └── demo.py           # Deterministic implementation (zero external calls)
+│   └── services/             # Pure domain logic functions
+│       ├── evidence.py       # Job matching, skill coverage &amp; graph builder
+│       ├── evidence_lock.py  # Regex &amp; dictionary claim classification
+│       ├── focus.py          # Session timer &amp; wellbeing logic
+│       ├── interview.py      # Adaptive questioning &amp; rubric evaluation
+│       ├── learning.py       # Gap-to-resource curriculum generator
+│       └── resume.py         # PyMuPDF text &amp; layout extraction
+├── tests/
+│   └── test_core.py          # 9 automated unit tests verifying core logic
+├── requirements.txt
+└── pytest.ini
+</code></pre>
+<h3 id="212-the-provider-abstraction-pattern">21.2 The Provider Abstraction Pattern</h3>
+<p>To support both zero-network hackathon demonstrations and optional self-hosted LLMs, the platform defines a strict provider interface in <code>backend/app/providers/base.py</code>:</p>
+<pre><code class="language-python">class AIProvider(ABC):
+    @abstractmethod
+    def extract_resume_facts(self, text: str) -&gt; dict: ...
+    @abstractmethod
+    def analyze_job_requirements(self, description: str) -&gt; dict: ...
+    @abstractmethod
+    def generate_interview_question(self, context: dict) -&gt; dict: ...
+    @abstractmethod
+    def evaluate_interview_answer(self, answer: str, context: dict) -&gt; dict: ...
+    @abstractmethod
+    def assess_evidence_lock_rewrite(self, original: str, proposed: str) -&gt; dict: ...
+</code></pre>
+<p>The active <code>DeterministicAIProvider</code> implements this interface using deterministic heuristics, ensuring the platform runs reliably offline without unexpected token costs or network latency.</p>
+<hr />
+<h2 id="22-state-management-proofcontext-reactive-loops">22. State Management: ProofContext &amp; Reactive Loops</h2>
+<h3 id="221-global-state-architecture">22.1 Global State Architecture</h3>
+<p>Client-side state is centralized in <code>ProofContext.tsx</code> via the <code>useProof()</code> hook. It manages a unified <code>DemoState</code> interface that synchronizes user actions across all 13 routes.</p>
+<pre><code class="language-mermaid">flowchart TD
+    subgraph Browser Storage
+        LS[(&quot;localStorage
+key: 'proofcoach-demo-v1'&quot;)]
+    end
+
+    subgraph ProofProvider Reactive Scope
+        State[&quot;state: DemoState&quot;]
+        Mutators[&quot;State Mutator Actions
+(updateCandidate, completeTask, submitInterview)&quot;]
+        Commit[&quot;commit(nextState)&quot;]
+
+        Mutators --&gt; Commit
+        Commit --&gt; State
+        Commit --&gt; LS
+        LS -. Initial Load .-&gt; State
+    end
+
+    subgraph Consuming Pages
+        P1[&quot;ProfilePage&quot;]
+        P2[&quot;ResumePage&quot;]
+        P3[&quot;RolePage&quot;]
+        P4[&quot;InterviewPage&quot;]
+        P5[&quot;ProjectLabPage&quot;]
+        P6[&quot;QuestPage&quot;]
+    end
+
+    State --&gt; P1
+    State --&gt; P2
+    State --&gt; P3
+    State --&gt; P4
+    State --&gt; P5
+    State --&gt; P6
+</code></pre>
+<h3 id="222-state-property-inventory-mutation-rules">22.2 State Property Inventory &amp; Mutation Rules</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Property</th>
+<th style="text-align: left;">Data Type</th>
+<th style="text-align: left;">Default / Seeded Value</th>
+<th style="text-align: left;">Mutation Action</th>
+<th style="text-align: left;">Persistence Scope</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>candidate</code></td>
+<td style="text-align: left;"><code>Candidate</code></td>
+<td style="text-align: left;">Demo Candidate (BE AI/ML)</td>
+<td style="text-align: left;"><code>updateCandidate(partial)</code></td>
+<td style="text-align: left;"><code>localStorage</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>completed</code></td>
+<td style="text-align: left;"><code>string[]</code></td>
+<td style="text-align: left;"><code>['profile', 'resume', ...]</code></td>
+<td style="text-align: left;"><code>complete(key)</code></td>
+<td style="text-align: left;"><code>localStorage</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>metrics</code></td>
+<td style="text-align: left;"><code>Record&lt;MetricKey, number&gt;</code></td>
+<td style="text-align: left;"><code>{ parser: 82, coverage: 50, ... }</code></td>
+<td style="text-align: left;"><code>setMetric(key, val)</code></td>
+<td style="text-align: left;"><code>localStorage</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>interviewAnswered</code></td>
+<td style="text-align: left;"><code>boolean</code></td>
+<td style="text-align: left;"><code>false</code></td>
+<td style="text-align: left;"><code>submitInterview()</code></td>
+<td style="text-align: left;"><code>localStorage</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>currentQuestion</code></td>
+<td style="text-align: left;"><code>number</code></td>
+<td style="text-align: left;"><code>0</code> (Level D)</td>
+<td style="text-align: left;"><code>submitInterview()</code></td>
+<td style="text-align: left;"><code>localStorage</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>answer</code></td>
+<td style="text-align: left;"><code>string</code></td>
+<td style="text-align: left;"><code>""</code></td>
+<td style="text-align: left;"><code>setAnswer(str)</code></td>
+<td style="text-align: left;"><code>localStorage</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>interviewSessionId</code></td>
+<td style="text-align: left;"><code>number \| null</code></td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: left;"><code>startInterview(id)</code></td>
+<td style="text-align: left;"><code>localStorage</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>evaluation</code></td>
+<td style="text-align: left;"><code>any \| null</code></td>
+<td style="text-align: left;"><code>null</code></td>
+<td style="text-align: left;"><code>submitInterview(eval)</code></td>
+<td style="text-align: left;"><code>localStorage</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>evidenceLockDemo</code></td>
+<td style="text-align: left;"><code>'idle'\|'safe'\|'blocked'</code></td>
+<td style="text-align: left;"><code>'idle'</code></td>
+<td style="text-align: left;"><code>setEvidenceLockDemo(val)</code></td>
+<td style="text-align: left;"><code>localStorage</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>project</code></td>
+<td style="text-align: left;"><code>ProjectState \| null</code></td>
+<td style="text-align: left;">AI SafeRoute (Flood API)</td>
+<td style="text-align: left;"><code>updateProject()</code>, <code>completeTask()</code></td>
+<td style="text-align: left;"><code>localStorage</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>video</code></td>
+<td style="text-align: left;"><code>VideoState</code></td>
+<td style="text-align: left;"><code>{ watched: 45, notes: [...] }</code></td>
+<td style="text-align: left;"><code>addVideoNote(note)</code></td>
+<td style="text-align: left;"><code>localStorage</code></td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="23-data-flow-traces-across-system-boundaries">23. Data Flow Traces across System Boundaries</h2>
+<h3 id="flow-a-the-resume-evidence-interview-feedback-loop">Flow A: The Resume → Evidence → Interview → Feedback Loop</h3>
+<pre><code class="language-mermaid">flowchart LR
+    A[&quot;Uploaded Resume (PDF)&quot;] --&gt;|PyMuPDF Extract| B[&quot;35% Latency Claim&quot;]
+    B --&gt;|Build Graph| C[&quot;Evidence Graph DAG&quot;]
+    C --&gt;|Identify Gap| D[&quot;Docker Missing&quot;]
+    C --&gt;|Trigger Probe| E[&quot;Interview Question (Level D)&quot;]
+    E --&gt;|Evaluate Answer| F[&quot;Truth Loop: 58% -&gt; 82%&quot;]
+    F --&gt;|Enforce Gate| G[&quot;Evidence Lock Rewrite&quot;]
+    G --&gt;|Generate Plan| H[&quot;Docker &amp; Testing Tasks&quot;]
+</code></pre>
+<h3 id="flow-b-live-interview-execution-evaluation-flow">Flow B: Live Interview Execution &amp; Evaluation Flow</h3>
+<pre><code class="language-mermaid">sequenceDiagram
+    participant UI as InterviewPage
+    participant API as /api/interview/{id}/answer
+    participant Svc as services.interview
+    participant DB as SQLite DB
+    participant Ctx as ProofContext
+
+    UI-&gt;&gt;API: POST { answer: &quot;Baseline was 420 ms...&quot; }
+    API-&gt;&gt;Svc: evaluate_answer(answer)
+    Svc-&gt;&gt;Svc: Regex pattern match (baseline, tools, fillers)
+    Svc--&gt;&gt;API: Returns evaluation payload &amp; scores
+    API-&gt;&gt;DB: Append transcript to InterviewSession
+    API--&gt;&gt;UI: { evaluation, next_question }
+    UI-&gt;&gt;Ctx: submitInterview(evaluation)
+    Ctx-&gt;&gt;Ctx: Increment XP (+50), set metrics.claim = 82
+    UI-&gt;&gt;UI: Navigate to /feedback
+</code></pre>
+<hr />
+<h2 id="24-persistence-storage-data-lifecycle">24. Persistence, Storage &amp; Data Lifecycle</h2>
+<p>ProofCoach AI enforces strict data governance across all storage mediums:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Storage Medium</th>
+<th style="text-align: left;">Key / Table Name</th>
+<th style="text-align: left;">Data Stored</th>
+<th style="text-align: left;">Lifetime</th>
+<th style="text-align: left;">Reset / Purge Behavior</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Browser LocalStorage</strong></td>
+<td style="text-align: left;"><code>proofcoach-demo-v1</code></td>
+<td style="text-align: left;">Serialized <code>DemoState</code> JSON (candidate, metrics, project, video notes)</td>
+<td style="text-align: left;">Persistent across sessions</td>
+<td style="text-align: left;">Wiped on "Delete My Data" or reset to demo fixtures</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Browser LocalStorage</strong></td>
+<td style="text-align: left;"><code>proofcoach-focus-v1</code></td>
+<td style="text-align: left;">Active timer state <code>{ demo, elapsed, ended }</code></td>
+<td style="text-align: left;">Persistent across refreshes</td>
+<td style="text-align: left;">Wiped on "Delete My Data"</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Browser LocalStorage</strong></td>
+<td style="text-align: left;"><code>proofcoach-theme</code></td>
+<td style="text-align: left;">Appearance string (<code>'dark'</code> or <code>'light'</code>)</td>
+<td style="text-align: left;">Persistent across sessions</td>
+<td style="text-align: left;">Preserved across demo resets</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Local SQLite DB</strong></td>
+<td style="text-align: left;"><code>candidateprofile</code></td>
+<td style="text-align: left;">Candidate name, category, education, preferences</td>
+<td style="text-align: left;">Persistent on host machine</td>
+<td style="text-align: left;">Truncated via <code>DELETE /api/data</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Local SQLite DB</strong></td>
+<td style="text-align: left;"><code>resumerecord</code></td>
+<td style="text-align: left;">Extracted text preview, parser score, analysis JSON</td>
+<td style="text-align: left;">Persistent on host machine</td>
+<td style="text-align: left;">Truncated via <code>DELETE /api/data</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Local SQLite DB</strong></td>
+<td style="text-align: left;"><code>interviewsession</code></td>
+<td style="text-align: left;">Session level, question index, full transcript JSON</td>
+<td style="text-align: left;">Persistent on host machine</td>
+<td style="text-align: left;">Truncated via <code>DELETE /api/data</code></td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>RAM (In-Memory)</strong></td>
+<td style="text-align: left;">Fast API UploadFile</td>
+<td style="text-align: left;">Raw PDF/DOCX binary stream (max 8 MB)</td>
+<td style="text-align: left;">Lifetime of HTTP request only</td>
+<td style="text-align: left;">Destroyed immediately after text extraction</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="25-apis-local-services-specification">25. APIs &amp; Local Services Specification</h2>
+<p>The FastAPI backend exposes <strong>13 high-performance REST endpoints</strong> on <code>http://localhost:8000</code>:</p>
+<pre><code class="language-mermaid">flowchart LR
+    subgraph REST API Surface
+        H[&quot;/api/health [GET]&quot;]
+        DR[&quot;/api/demo/reset [POST]&quot;]
+        DS[&quot;/api/demo/state [GET]&quot;]
+        RP[&quot;/api/resume/parse [POST]&quot;]
+        RA[&quot;/api/role/analyze [POST]&quot;]
+        EG[&quot;/api/evidence/graph [POST]&quot;]
+        CE[&quot;/api/claims/extract [POST]&quot;]
+        IS[&quot;/api/interview/start [POST]&quot;]
+        IA[&quot;/api/interview/{id}/answer [POST]&quot;]
+        EL[&quot;/api/evidence-lock/rewrite [POST]&quot;]
+        LP[&quot;/api/learning/plan [POST]&quot;]
+        VP[&quot;/api/video/plan [POST]&quot;]
+        DD[&quot;/api/data [DELETE]&quot;]
+    end
+</code></pre>
+<h3 id="complete-openapi-style-endpoint-index">Complete OpenAPI-Style Endpoint Index</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Method</th>
+<th style="text-align: left;">Endpoint Path</th>
+<th style="text-align: left;">Request Body</th>
+<th style="text-align: left;">Response Schema</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>GET</code></td>
+<td style="text-align: left;"><code>/api/health</code></td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;"><code>{ status, mode, local_first }</code></td>
+<td style="text-align: left;">Healthcheck and runtime provider verification.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>POST</code></td>
+<td style="text-align: left;"><code>/api/demo/reset</code></td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;"><code>{ reset, state }</code></td>
+<td style="text-align: left;">Truncates SQLite tables and re-seeds deterministic demo data.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>GET</code></td>
+<td style="text-align: left;"><code>/api/demo/state</code></td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;"><code>DemoState</code> JSON</td>
+<td style="text-align: left;">Returns full deterministic view model for zero-setup demos.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>POST</code></td>
+<td style="text-align: left;"><code>/api/resume/parse</code></td>
+<td style="text-align: left;"><code>multipart/form-data</code> (<code>file</code>)</td>
+<td style="text-align: left;"><code>ParserAnalysis</code></td>
+<td style="text-align: left;">Extracts text and evaluates the 8-point robustness rubric.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>POST</code></td>
+<td style="text-align: left;"><code>/api/role/analyze</code></td>
+<td style="text-align: left;"><code>{ role, job_description }</code></td>
+<td style="text-align: left;"><code>RoleAnalysis</code></td>
+<td style="text-align: left;">Analyzes role requirements, responsibilities, and competencies.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>POST</code></td>
+<td style="text-align: left;"><code>/api/evidence/graph</code></td>
+<td style="text-align: left;"><code>{ candidate_skills, required_skills }</code></td>
+<td style="text-align: left;"><code>{ nodes, edges, coverage }</code></td>
+<td style="text-align: left;">Constructs DAG node and edge topology for React Flow.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>POST</code></td>
+<td style="text-align: left;"><code>/api/claims/extract</code></td>
+<td style="text-align: left;"><code>{ text }</code></td>
+<td style="text-align: left;"><code>{ claims: [...] }</code></td>
+<td style="text-align: left;">Extracts quantified achievement statements from raw text.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>POST</code></td>
+<td style="text-align: left;"><code>/api/interview/start</code></td>
+<td style="text-align: left;"><code>{ claim, mode }</code></td>
+<td style="text-align: left;"><code>{ session_id, level, question }</code></td>
+<td style="text-align: left;">Initializes interview session record in SQLite.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>POST</code></td>
+<td style="text-align: left;"><code>/api/interview/{id}/answer</code></td>
+<td style="text-align: left;"><code>{ answer }</code></td>
+<td style="text-align: left;"><code>{ evaluation, next_question }</code></td>
+<td style="text-align: left;">Scores candidate answer and determines next adaptive probe.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>POST</code></td>
+<td style="text-align: left;"><code>/api/evidence-lock/rewrite</code></td>
+<td style="text-align: left;"><code>{ original, proposed, confirmed }</code></td>
+<td style="text-align: left;"><code>{ status, color, message, ... }</code></td>
+<td style="text-align: left;">Classifies rewrite into Safe, Confirm, or Blocked.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>POST</code></td>
+<td style="text-align: left;"><code>/api/learning/plan</code></td>
+<td style="text-align: left;"><code>{ gaps, daily_minutes }</code></td>
+<td style="text-align: left;"><code>{ daily_minutes, split, tasks }</code></td>
+<td style="text-align: left;">Generates prioritized learning curriculum and artifact goals.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>POST</code></td>
+<td style="text-align: left;"><code>/api/video/plan</code></td>
+<td style="text-align: left;"><code>{ title, duration, daily_minutes, notes }</code></td>
+<td style="text-align: left;"><code>{ days, sessions, concepts }</code></td>
+<td style="text-align: left;">Chunks long video tutorials into daily study/practice sessions.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>DELETE</code></td>
+<td style="text-align: left;"><code>/api/data</code></td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;"><code>{ deleted, local_database_retained_empty }</code></td>
+<td style="text-align: left;">Permanent purge of all candidate database records.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="26-algorithms-internal-logic-implementation">26. Algorithms &amp; Internal Logic Implementation</h2>
+<h3 id="261-parser-robustness-scoring-formula">26.1 Parser Robustness Scoring Formula</h3>
+<p>The robustness score $S_{   ext{robust}}$ is calculated as:
+$$S_{   ext{robust}} = \max\left(0, \min\left(100, \sum_{i=1}^{8} P_i
+ight)
+ight)$$
+Where $P_i$ represents points awarded for each of the 8 checks:
+1. $P_1 =   ext{round}(20   imes \min(1.0, L_{  ext{text}} / 675))$
+2. $P_2 = 10    ext{ if (email and phone) else } 5$
+3. $P_3 = \min(15, N_{  ext{sections}}  imes 3)$
+4. $P_4 = 10    ext{ if dates found else } 4$
+5. $P_5 = \min(15, N_{  ext{skills}}    imes 3)$
+6. $P_6 = 10    ext{ if projects found else } 0$
+7. $P_7 = 4     ext{ if two-column else } 10$
+8. $P_8 = 4     ext{ if tables found else } 10$</p>
+<h3 id="262-evidence-lock-verification-logic">26.2 Evidence Lock Verification Logic</h3>
+<pre><code class="language-python">def assess_rewrite(original: str, proposed: str, confirmed_facts: list[str] = None):
+    confirmed_facts = confirmed_facts or []
+    # 1. Extract numerical tokens
+    original_numbers = set(NUMBER_PATTERN.findall(original)) | {
+        item for fact in confirmed_facts for item in NUMBER_PATTERN.findall(fact)
+    }
+    proposed_numbers = set(NUMBER_PATTERN.findall(proposed))
+    invented_numbers = sorted(proposed_numbers - original_numbers)
+
+    # 2. Extract technical terms
+    original_tech = {t for t in TECH_TERMS if t.lower() in original.lower()}
+    proposed_tech = {t for t in TECH_TERMS if t.lower() in proposed.lower()}
+    invented_tech = sorted(proposed_tech - original_tech)
+
+    # 3. Block unsupported facts
+    if invented_numbers or invented_tech:
+        return {
+            &quot;status&quot;: &quot;blocked&quot;,
+            &quot;unsupported&quot;: invented_numbers + invented_tech,
+            &quot;message&quot;: &quot;Evidence Lock prevented an unsupported achievement from being added.&quot;
+        }
+
+    # 4. Check for unconfirmed power verbs
+    if any(v in proposed.lower() for v in [&quot;led&quot;, &quot;architected&quot;, &quot;owned&quot;]) and        not any(v in original.lower() for v in [&quot;led&quot;, &quot;architected&quot;, &quot;owned&quot;]):
+        return {&quot;status&quot;: &quot;confirm&quot;, &quot;message&quot;: &quot;Ownership elevated; confirm evidence.&quot;}
+
+    return {&quot;status&quot;: &quot;safe&quot;, &quot;message&quot;: &quot;Wording improved without adding new facts.&quot;}
+</code></pre>
+<h3 id="263-video-planner-chunking-formula">26.3 Video Planner Chunking Formula</h3>
+<pre><code class="language-python">learning_budget = round(daily_minutes * 0.75)
+practice_budget = daily_minutes - learning_budget
+days_required = math.ceil(duration_minutes / learning_budget)
+</code></pre>
+<hr />
+<h2 id="27-security-privacy-local-first-verification">27. Security, Privacy &amp; Local-First Verification</h2>
+<h3 id="271-telemetry-and-network-isolation">27.1 Telemetry and Network Isolation</h3>
+<ul>
+<li><strong>Zero Third-Party Telemetry:</strong> No Google Analytics, Mixpanel, Sentry, or Segment SDKs are installed or imported.</li>
+<li><strong>Localhost Binding:</strong> FastAPI binds by default to <code>127.0.0.1:8000</code>. CORS middleware explicitly restricts origins to <code>http://localhost:5173</code> and <code>http://127.0.0.1:5173</code>.</li>
+<li><strong>Ephemeral Upload Processing:</strong> Uploaded resume files are passed as raw bytes in memory directly to PyMuPDF. No resume PDF or DOCX file is ever written to disk or stored in permanent directories.</li>
+<li><strong>Git Hygiene:</strong> Local databases (<code>*.db</code>, <code>*.sqlite3</code>), virtual environments (<code>.venv/</code>), and environment files (<code>.env</code>) are strictly excluded via <code>.gitignore</code>.</li>
+</ul>
+<hr />
+<h2 id="28-technology-stack-analysis">28. Technology Stack Analysis</h2>
+<p>ProofCoach AI is built with an intentionally lightweight, modern, and production-tested technology stack.</p>
+<h3 id="281-frontend-technologies">28.1 Frontend Technologies</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Library / Tool</th>
+<th style="text-align: center;">Version</th>
+<th style="text-align: left;">Role in ProofCoach AI</th>
+<th style="text-align: left;">Architectural Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>React</strong></td>
+<td style="text-align: center;"><code>19.0.0</code></td>
+<td style="text-align: left;">Declarative UI framework</td>
+<td style="text-align: left;">Concurrent rendering, native transition hooks, component reusability.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Vite</strong></td>
+<td style="text-align: center;"><code>7.3.6</code></td>
+<td style="text-align: left;">Frontend bundler &amp; dev server</td>
+<td style="text-align: left;">Sub-millisecond HMR, optimized tree-shaking production builds.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>TypeScript</strong></td>
+<td style="text-align: center;"><code>5.9.3</code></td>
+<td style="text-align: left;">Static type safety</td>
+<td style="text-align: left;">Strict type enforcement across domain models (<code>Candidate</code>, <code>ProjectState</code>).</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Tailwind CSS</strong></td>
+<td style="text-align: center;"><code>3.4.17</code></td>
+<td style="text-align: left;">Utility CSS foundation</td>
+<td style="text-align: left;">Rapid layout scaffolding complementing custom semantic CSS tokens.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>React Router</strong></td>
+<td style="text-align: center;"><code>7.1.5</code></td>
+<td style="text-align: left;">Client-side routing engine</td>
+<td style="text-align: left;">Multi-page client routing, history management, and code-split lazy loading.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>@xyflow/react</strong></td>
+<td style="text-align: center;"><code>12.4.4</code></td>
+<td style="text-align: left;">Career Evidence Graph</td>
+<td style="text-align: left;">Interactive node-based DAG rendering with custom HTML handles and zoom/pan.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Recharts</strong></td>
+<td style="text-align: center;"><code>2.15.1</code></td>
+<td style="text-align: left;">Diagnostic data visualization</td>
+<td style="text-align: left;">SVG-based Radar charts, bar meters, and responsive metric graphs.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Framer Motion</strong></td>
+<td style="text-align: center;"><code>12.4.7</code></td>
+<td style="text-align: left;">UI transitions &amp; animations</td>
+<td style="text-align: left;">Micro-interactions, page entrance fade-ins, and step transitions.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Lucide React</strong></td>
+<td style="text-align: center;"><code>0.475.0</code></td>
+<td style="text-align: left;">System iconography</td>
+<td style="text-align: left;">Clean, accessible technical icon set across all 13 routes.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="282-backend-technologies">28.2 Backend Technologies</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Library / Tool</th>
+<th style="text-align: center;">Version</th>
+<th style="text-align: left;">Role in ProofCoach AI</th>
+<th style="text-align: left;">Architectural Rationale</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Python</strong></td>
+<td style="text-align: center;"><code>3.11+</code></td>
+<td style="text-align: left;">Backend runtime environment</td>
+<td style="text-align: left;">Fast execution, robust typing, rich text-processing ecosystem.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>FastAPI</strong></td>
+<td style="text-align: center;"><code>0.116.1</code></td>
+<td style="text-align: left;">Local REST API framework</td>
+<td style="text-align: left;">High-throughput asynchronous routing, automatic OpenAPI generation.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>SQLModel</strong></td>
+<td style="text-align: center;"><code>0.0.24</code></td>
+<td style="text-align: left;">ORM &amp; data persistence</td>
+<td style="text-align: left;">Combines SQLAlchemy with Pydantic v2 for type-safe SQLite persistence.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>PyMuPDF (fitz)</strong></td>
+<td style="text-align: center;"><code>1.26.4</code></td>
+<td style="text-align: left;">High-speed PDF text parser</td>
+<td style="text-align: left;">Spatial coordinate analysis, block layout extraction, zero external binaries.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>python-docx</strong></td>
+<td style="text-align: center;"><code>1.2.0</code></td>
+<td style="text-align: left;">Word document text parser</td>
+<td style="text-align: left;">Direct XML parsing of DOCX paragraphs and table structures.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Pydantic</strong></td>
+<td style="text-align: center;"><code>2.13.5</code></td>
+<td style="text-align: left;">Data validation &amp; schemas</td>
+<td style="text-align: left;">Strict runtime input/output validation, fast C-extension serialization.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Uvicorn</strong></td>
+<td style="text-align: center;"><code>0.35.0</code></td>
+<td style="text-align: left;">ASGI application server</td>
+<td style="text-align: left;">Lightweight, reliable local HTTP server with automatic hot-reloading.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Pytest</strong></td>
+<td style="text-align: center;"><code>8.4.2</code></td>
+<td style="text-align: left;">Automated testing framework</td>
+<td style="text-align: left;">Fast, deterministic testing of services, parsers, and Evidence Lock.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="29-third-party-services-dependency-verification">29. Third-Party Services &amp; Dependency Verification</h2>
+<p>An exhaustive audit of the codebase confirms that ProofCoach AI maintains <strong>zero runtime dependencies on cloud services or external AI vendors</strong>:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Service / Dependency</th>
+<th style="text-align: left;">Integration Status</th>
+<th style="text-align: left;">Data Sent</th>
+<th style="text-align: left;">Data Received</th>
+<th style="text-align: left;">Criticality</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>OpenAI / Claude / Gemini APIs</strong></td>
+<td style="text-align: left;"><strong>Not Present</strong></td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;">None. Platform uses deterministic heuristics.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Ollama (Local LLM)</strong></td>
+<td style="text-align: left;"><strong>Optional</strong></td>
+<td style="text-align: left;">Prompt text (localhost only)</td>
+<td style="text-align: left;">Generated text</td>
+<td style="text-align: left;">Optional. Codebase runs 100% without Ollama.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>YouTube IFrame Embed</strong></td>
+<td style="text-align: left;"><strong>External Client</strong></td>
+<td style="text-align: left;">Video ID parameter</td>
+<td style="text-align: left;">Video player iframe</td>
+<td style="text-align: left;">Required only for <code>/video-plan</code> visual embed.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Google Analytics / Telemetry</strong></td>
+<td style="text-align: left;"><strong>Not Present</strong></td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;">None. Prohibited by privacy policy.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Cloud Hosting (Vercel)</strong></td>
+<td style="text-align: left;"><strong>Client Hosting</strong></td>
+<td style="text-align: left;">Static JS/CSS assets</td>
+<td style="text-align: left;">Static assets</td>
+<td style="text-align: left;">Frontend demo hosting only. Backend remains local.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="30-feature-connection-matrix">30. Feature Connection Matrix</h2>
+<p>The following matrix documents how data originates, transfers, and influences connected modules across the platform:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature Module</th>
+<th style="text-align: left;">Reads Data From</th>
+<th style="text-align: left;">Writes / Mutates Data To</th>
+<th style="text-align: left;">Downstream Influence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Onboarding</strong></td>
+<td style="text-align: left;">User form inputs</td>
+<td style="text-align: left;"><code>state.candidate</code></td>
+<td style="text-align: left;">Profile, Command Centre, Target Role, Interview Persona</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Resume Lab</strong></td>
+<td style="text-align: left;">Raw PDF/DOCX file</td>
+<td style="text-align: left;"><code>state.metrics.parser</code>, claims</td>
+<td style="text-align: left;">Career Evidence Graph, Claim Detector, Interview Questioning</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Target Role</strong></td>
+<td style="text-align: left;">Job text / demo roles</td>
+<td style="text-align: left;">Role requirements, skill gaps</td>
+<td style="text-align: left;">Career Evidence Graph, Learning Plan priorities, Interview Context</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Evidence Graph</strong></td>
+<td style="text-align: left;">Candidate skills + Role gaps</td>
+<td style="text-align: left;">React Flow node layout</td>
+<td style="text-align: left;">Visual gap inspection, next action recommendations</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Adaptive Interview</strong></td>
+<td style="text-align: left;">Resume claim + Role context</td>
+<td style="text-align: left;"><code>state.answer</code>, <code>session_id</code></td>
+<td style="text-align: left;">Truth Loop confidence, Radar scores, XP rewards</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Feedback Engine</strong></td>
+<td style="text-align: left;">Interview answer evaluation</td>
+<td style="text-align: left;"><code>state.evaluation</code>, <code>metrics</code></td>
+<td style="text-align: left;">Evidence Lock rewrites, Personalized Learning recommendations</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Evidence Lock</strong></td>
+<td style="text-align: left;">Proposed bullet points</td>
+<td style="text-align: left;"><code>state.evidenceLockDemo</code></td>
+<td style="text-align: left;">Prevents resume hallucination; feeds safe rewrites to Resume Lab</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Learning Plan</strong></td>
+<td style="text-align: left;">Target role gaps</td>
+<td style="text-align: left;">Active study curriculum</td>
+<td style="text-align: left;">Directs candidate into Project Lab and Focus Shield</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Video Planner</strong></td>
+<td style="text-align: left;">YouTube URL + notes</td>
+<td style="text-align: left;"><code>state.video.notes</code>, progress</td>
+<td style="text-align: left;">Daily study scheduling, concept mastery tracking</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Project Lab</strong></td>
+<td style="text-align: left;">Learning goals</td>
+<td style="text-align: left;"><code>state.project.tasks</code>, progress</td>
+<td style="text-align: left;">Generates tangible resume evidence; triggers interview defense</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Career Quest</strong></td>
+<td style="text-align: left;">Platform-wide actions</td>
+<td style="text-align: left;"><code>state.metrics.questPoints</code></td>
+<td style="text-align: left;">Unlocks progression levels (Build → Prove → Perform)</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Focus Shield</strong></td>
+<td style="text-align: left;">Time limit preference</td>
+<td style="text-align: left;"><code>proofcoach-focus-v1</code> (storage)</td>
+<td style="text-align: left;">Autosaves active study sessions; locks intensive activity at limit</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Settings</strong></td>
+<td style="text-align: left;">User preferences</td>
+<td style="text-align: left;">Theme tokens, full data purge</td>
+<td style="text-align: left;">Global styling, complete reset of SQLite and browser storage</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="31-file-code-responsibility-directory">31. File &amp; Code Responsibility Directory</h2>
+<h3 id="311-frontend-key-modules-frontendsrc">31.1 Frontend Key Modules (<code>frontend/src/</code>)</h3>
+<ul>
+<li><code>App.tsx</code>: Central router declaring 13 application routes with code-split lazy loading and <code>Suspense</code> fallbacks.</li>
+<li><code>types.ts</code>: Master TypeScript interface definitions (<code>Candidate</code>, <code>ProjectTask</code>, <code>ProjectState</code>, <code>VideoNote</code>, <code>DemoState</code>).</li>
+<li><code>context/ProofContext.tsx</code>: The application's reactive engine; manages state mutation actions and synchronizes to <code>localStorage</code>.</li>
+<li><code>context/ThemeContext.tsx</code>: Manages dark/light theme state, listening to OS color preferences and storing overrides.</li>
+<li><code>components/Shell.tsx</code>: The master layout wrapper rendering the responsive sidebar, brand header, and view transitions.</li>
+<li><code>components/UI.tsx</code>: Shared atomic design components (<code>Panel</code>, <code>ScoreRing</code>, <code>StatusPill</code>, <code>PageIntro</code>, <code>EvidenceNotice</code>).</li>
+<li><code>services/api.ts</code>: Fetch client configured to communicate with <code>http://localhost:8000</code> with graceful offline fallback.</li>
+<li><code>services/video.ts</code>: Regex-based YouTube URL validator and 11-character video ID extractor.</li>
+<li><code>data/demo.ts</code>: Immutable fallback fixtures providing deterministic seed data for zero-network demonstrations.</li>
+</ul>
+<h3 id="312-backend-key-modules-backendapp">31.2 Backend Key Modules (<code>backend/app/</code>)</h3>
+<ul>
+<li><code>main.py</code>: FastAPI initialization, CORS security middleware, and 13 REST API route handlers.</li>
+<li><code>models.py</code>: SQLModel database entities (<code>CandidateProfile</code>, <code>ResumeRecord</code>, <code>InterviewSession</code>).</li>
+<li><code>schemas.py</code>: Pydantic v2 schemas validating request and response payloads.</li>
+<li><code>db.py</code>: SQLite engine initialization and dependency-injected session management.</li>
+<li><code>services/resume.py</code>: PyMuPDF text extraction, spatial bounding-box column analysis, and the 8-point robustness rubric.</li>
+<li><code>services/evidence.py</code>: Case-insensitive job-skill matching, coverage calculations, and Evidence Graph DAG generator.</li>
+<li><code>services/evidence_lock.py</code>: Regex pattern matching and technical vocabulary verification preventing fabricated claims.</li>
+<li><code>services/interview.py</code>: Level A through F question selector and multi-dimensional answer rubric evaluation engine.</li>
+<li><code>services/learning.py</code>: Gap-to-curriculum generator and mathematical video study chunking algorithm.</li>
+<li><code>services/focus.py</code>: Session timer governor and wellbeing state evaluator.</li>
+</ul>
+<hr />
+<h2 id="32-how-the-system-thinks-the-cognitive-flow">32. How the System Thinks: The Cognitive Flow</h2>
+<p>ProofCoach AI's internal intelligence can be conceptualized as an 8-stage cognitive processing loop:</p>
+<pre><code class="language-mermaid">flowchart TD
+    O[&quot;1. OBSERVE
+(Extract raw text, layout coordinates &amp; candidate input)&quot;]
+    --&gt; U[&quot;2. UNDERSTAND
+(Detect measurable claims, extract skills &amp; map sections)&quot;]
+    --&gt; C[&quot;3. COMPARE
+(Match candidate skills against target role requirements)&quot;]
+    --&gt; E[&quot;4. EVALUATE
+(Calculate parser robustness &amp; identify critical evidence gaps)&quot;]
+    --&gt; D[&quot;5. DECIDE
+(Select adaptive interview question level from A to F)&quot;]
+    --&gt; R[&quot;6. RESPOND
+(Challenge candidate on baselines, trade-offs &amp; personal ownership)&quot;]
+    --&gt; T[&quot;7. TRACK
+(Score answer against rubric, update truth loop &amp; award XP)&quot;]
+    --&gt; A[&quot;8. ADAPT
+(Generate personalized learning plan &amp; project lab tasks)&quot;]
+
+    A -. New Evidence Created .-&gt; O
+</code></pre>
+<ol>
+<li><strong>Observe:</strong> The system ingests raw PDF/DOCX bytes or job description text.</li>
+<li><strong>Understand:</strong> Regex patterns and NLP tokenizers identify sections, dates, technologies, and quantified metrics.</li>
+<li><strong>Compare:</strong> The candidate's verified skill set is compared against the target role's expectations.</li>
+<li><strong>Evaluate:</strong> Strengths are confirmed; gaps are tagged as role blockers.</li>
+<li><strong>Decide:</strong> The engine selects an interview probe tailored specifically to the highest-risk claim.</li>
+<li><strong>Respond:</strong> The interviewer delivers the challenge via text and Web Speech audio.</li>
+<li><strong>Track:</strong> Answer quality updates the Resume Truth Loop and increments Career Quest XP.</li>
+<li><strong>Adapt:</strong> Gaps exposed during questioning are automatically translated into project tasks in the Project Lab.</li>
+</ol>
+<hr />
+<h2 id="33-demo-vs-reality-transparent-capability-audit">33. Demo vs Reality: Transparent Capability Audit</h2>
+<p>To maintain complete transparency, the following audit distinguishes fully operational local features from simulated or demo behaviors:</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Feature / Subsystem</th>
+<th style="text-align: left;">Operational Reality</th>
+<th style="text-align: left;">Implementation Mechanism</th>
+<th style="text-align: left;">Notes &amp; Limitations</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>PDF/DOCX Text Extraction</strong></td>
+<td style="text-align: left;"><strong>100% Real</strong></td>
+<td style="text-align: left;">PyMuPDF (<code>fitz</code>) and <code>python-docx</code></td>
+<td style="text-align: left;">Runs locally in memory; handles standard documents.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Two-Column Layout Detection</strong></td>
+<td style="text-align: left;"><strong>100% Real</strong></td>
+<td style="text-align: left;">Horizontal bounding-box coordinate analysis</td>
+<td style="text-align: left;">Heuristic-based; complex multi-frame magazines may vary.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Parser Robustness Score</strong></td>
+<td style="text-align: left;"><strong>100% Real</strong></td>
+<td style="text-align: left;">8-point transparent algorithmic rubric</td>
+<td style="text-align: left;">Real diagnostic calculation; not an ATS score.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Evidence Lock Filtering</strong></td>
+<td style="text-align: left;"><strong>100% Real</strong></td>
+<td style="text-align: left;">Regex extraction &amp; set-difference logic</td>
+<td style="text-align: left;">Reliably catches new numbers and unconfirmed tech terms.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Interactive Evidence Graph</strong></td>
+<td style="text-align: left;"><strong>100% Real</strong></td>
+<td style="text-align: left;"><code>@xyflow/react</code> (React Flow)</td>
+<td style="text-align: left;">Fully interactive DAG with zoom, pan, and inspector.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Local SQLite Persistence</strong></td>
+<td style="text-align: left;"><strong>100% Real</strong></td>
+<td style="text-align: left;">SQLModel / SQLite (<code>proofcoach.db</code>)</td>
+<td style="text-align: left;">Real database operations on local host.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Local Data Purge</strong></td>
+<td style="text-align: left;"><strong>100% Real</strong></td>
+<td style="text-align: left;"><code>DELETE /api/data</code> + storage wipe</td>
+<td style="text-align: left;">Completely wipes database tables and local storage.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Adaptive Interview Flow</strong></td>
+<td style="text-align: left;"><strong>Deterministic Logic</strong></td>
+<td style="text-align: left;">Stateful Python service + local fallback</td>
+<td style="text-align: left;">Implements Levels A–F probing using deterministic templates.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Answer Evaluation</strong></td>
+<td style="text-align: left;"><strong>Deterministic Heuristics</strong></td>
+<td style="text-align: left;">Keyword, baseline, and structure regex</td>
+<td style="text-align: left;">Accurate for structured answers; not a full LLM evaluator.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Browser Speech Recognition</strong></td>
+<td style="text-align: left;"><strong>100% Real</strong></td>
+<td style="text-align: left;">Web Speech API (<code>webkitSpeechRecognition</code>)</td>
+<td style="text-align: left;">Hardware and browser-dependent; text fallback provided.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Emergency Contact Action</strong></td>
+<td style="text-align: left;"><strong>Simulated</strong></td>
+<td style="text-align: left;">Client-side notification dispatch</td>
+<td style="text-align: left;">Explicitly labeled as a simulation; no SMS/calls sent.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Wellbeing Cap / Demo Timer</strong></td>
+<td style="text-align: left;"><strong>100% Real</strong></td>
+<td style="text-align: left;">Client-side timer loop &amp; autosave</td>
+<td style="text-align: left;">Compresses 2.5h to 20s for evaluation.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>OS Notification Blocking</strong></td>
+<td style="text-align: left;"><strong>Future Work</strong></td>
+<td style="text-align: left;">Not implemented (honest disclaimer)</td>
+<td style="text-align: left;">Disclaimed as requiring native mobile OS integration.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="34-current-technical-limitations">34. Current Technical Limitations</h2>
+<p>An honest audit of the current prototype reveals the following engineering boundaries:
+1. <strong>Frontend-Only Cloud Deployment:</strong> The public Vercel deployment hosts the client-side SPA. Without a running local FastAPI backend, the Vercel demo operates purely on deterministic client fixtures.
+2. <strong>Single-User SQLite Concurrency:</strong> SQLite is ideally suited for local-first single-user installations, but cannot support high-concurrency multi-tenant cloud deployments without PostgreSQL.
+3. <strong>Lexical vs. Semantic Parsing:</strong> Skill and claim extraction rely on sophisticated regex dictionaries rather than semantic vector embeddings. Unconventional phrasing may not be recognized.
+4. <strong>Browser Speech Variability:</strong> The Web Speech API depends heavily on Google Chrome's underlying engine. In Firefox or Safari, speech recognition gracefully degrades to text input.
+5. <strong>Static Course Catalog:</strong> Learning resources (<code>RESOURCE_CATALOG</code>) are statically defined. External link rot or course restructuring requires periodic manual catalog curation.</p>
+<hr />
+<h2 id="35-production-roadmap-future-extensions">35. Production Roadmap &amp; Future Extensions</h2>
+<pre><code class="language-mermaid">flowchart LR
+    P1[&quot;Phase 1: Secure Cloud Pilot
+(PostgreSQL, JWT Auth, HTTPS)&quot;]
+    --&gt; P2[&quot;Phase 2: Semantic Intelligence
+(Local Embeddings, Calibrated Rubrics)&quot;]
+    --&gt; P3[&quot;Phase 3: Multi-Session Mentorship
+(Longitudinal History, Mentor Mode)&quot;]
+    --&gt; P4[&quot;Phase 4: Native Mobile Focus
+(OS Notification APIs, Screen Time)&quot;]
+</code></pre>
+<h3 id="phase-1-secure-multi-user-pilot">Phase 1 — Secure Multi-User Pilot</h3>
+<ul>
+<li>Transition from SQLite to PostgreSQL with Alembic database migrations.</li>
+<li>Implement stateless JWT authentication with encrypted user data at rest.</li>
+<li>Introduce presigned S3 upload URLs with automatic resume-file destruction after parsing.</li>
+</ul>
+<h3 id="phase-2-semantic-intelligence-local-llms">Phase 2 — Semantic Intelligence &amp; Local LLMs</h3>
+<ul>
+<li>Integrate lightweight local embedding models (e.g., <code>bge-small-en</code>) via ONNX Runtime for semantic skill matching.</li>
+<li>Connect local Ollama instances (<code>llama3:8b</code> or <code>mistral</code>) for dynamically generated interview follow-ups while strictly maintaining Evidence Lock boundaries.</li>
+</ul>
+<h3 id="phase-3-longitudinal-growth-mentor-portals">Phase 3 — Longitudinal Growth &amp; Mentor Portals</h3>
+<ul>
+<li>Track candidate improvement over weeks, rendering time-series readiness trajectories.</li>
+<li>Add an exportable "Evidence Portfolio" that candidates can share with real hiring managers.</li>
+</ul>
+<h3 id="phase-4-native-mobile-focus-companion">Phase 4 — Native Mobile Focus Companion</h3>
+<ul>
+<li>Develop React Native mobile apps for iOS and Android.</li>
+<li>Integrate Apple Screen Time APIs and Android Digital Wellbeing APIs to enforce true OS-level notification blocking during focus study sessions.</li>
+</ul>
+<hr />
+<h2 id="technical-glossary">Technical Glossary</h2>
+<ul>
+<li><strong>ATS (Applicant Tracking System):</strong> Enterprise HR software that ingests, parses, and filters resume files before human recruiters review them.</li>
+<li><strong>Career Evidence Graph:</strong> A directed acyclic graph (DAG) mapping skills to projects, measurable claims, interview defenses, and job requirements.</li>
+<li><strong>Deterministic Vertical Slice:</strong> A fully functional software slice that executes predictable, reproducible logic without external network dependencies.</li>
+<li><strong>Evidence Lock:</strong> A rule-based security mechanism that prevents generative AI from fabricating numbers, metrics, or technologies on a resume.</li>
+<li><strong>Local-First Architecture:</strong> A software design pattern where data storage, compute, and execution occur primarily on the user's local device.</li>
+<li><strong>Parser Robustness Score:</strong> A transparent 0–100 diagnostic calculated by ProofCoach that measures how reliably a machine can extract document text without formatting errors.</li>
+<li><strong>PYQ-Style Practice:</strong> Practice questions modeled after Previous Year Questions, generated algorithmically without claiming historical provenance.</li>
+<li><strong>Resume Truth Loop:</strong> A verification feedback cycle in which interview answers directly alter the system's demonstrated confidence in a resume claim.</li>
+<li><strong>Web Speech API:</strong> A browser API providing speech recognition (voice input) and speech synthesis (text-to-speech) capabilities.</li>
+</ul>
+<hr />
+<h2 id="appendix-verification-test-coverage">Appendix: Verification &amp; Test Coverage</h2>
+<h3 id="automated-backend-test-suite-backendteststest_corepy">Automated Backend Test Suite (<code>backend/tests/test_core.py</code>)</h3>
+<p>All 9 core unit tests pass with 100% reliability under Python 3.11+:
+1. <code>test_backend_health</code>: Verifies <code>/api/health</code> returns status <code>ok</code> and <code>local_first: true</code>.
+2. <code>test_resume_parser_components_are_transparent</code>: Confirms Parser Robustness score falls between 0–100, detects Python, warns on two-column layouts, and includes disclaimer.
+3. <code>test_claim_extraction_finds_quantified_claim</code>: Verifies regex extracts <em>"Reduced API latency by 35%"</em>.
+4. <code>test_job_skill_matching_is_case_insensitive</code>: Confirms case-insensitive matching across <code>["python", "REST", "Sql"]</code>.
+5. <code>test_evidence_lock_blocks_invented_metric</code>: Verifies that adding an unconfirmed <code>40%</code> metric is blocked.
+6. <code>test_evidence_lock_allows_grammar_only_rewrite</code>: Verifies that stylistic improvements are classified as <code>safe</code>.
+7. <code>test_interview_evidence_does_not_claim_external_truth</code>: Confirms claim confidence increases without claiming real-world truth.
+8. <code>test_demo_timer_ends_at_twenty_seconds</code>: Verifies demo timer ends exactly at 20 seconds with autosave enabled.
+9. <code>test_demo_seed_is_complete_and_non_personal</code>: Verifies initial synthetic fixtures are non-personal and complete.</p>
+<h3 id="frontend-quality-assurance-commands">Frontend Quality Assurance Commands</h3>
+<ul>
+<li><code>npm run lint</code>: Zero ESLint warnings or errors under strict TypeScript rules.</li>
+<li><code>npm run typecheck</code>: Strict <code>tsc -b</code> type checking passes with zero type mismatches.</li>
+<li><code>npm run build</code>: Production Vite bundling compiles successfully in under 10 seconds.</li>
+</ul>
+    </div>
+
+  </div>
+</body>
+</html>

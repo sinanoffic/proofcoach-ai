@@ -56,6 +56,8 @@ export interface DemoState {
   interviewAnswered: boolean
   currentQuestion: number
   answer: string
+  interviewSessionId: number | null
+  evaluation: any | null
   evidenceLockDemo: 'idle' | 'safe' | 'blocked'
   project: ProjectState | null
   video: VideoState

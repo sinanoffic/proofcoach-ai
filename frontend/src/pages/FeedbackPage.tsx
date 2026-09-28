@@ -1,29 +1,55 @@
 import { AlertTriangle, ArrowRight, Check, LockKeyhole, ShieldCheck, TrendingUp, X } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { PolarAngleAxis, PolarGrid, Radar, RadarChart, ResponsiveContainer } from 'recharts'
-import { EvidenceNotice, PageIntro, Panel, ScoreRing, StatusPill } from '../components/UI'
+import { EvidenceNotice, PageIntro, Panel, ScoreRing } from '../components/UI'
 import { useProof } from '../context/ProofContext'
 import { useTheme } from '../context/ThemeContext'
 
-const radar = [{ metric: 'Fundamentals', score: 74 }, { metric: 'Problem solving', score: 76 }, { metric: 'Ownership', score: 82 }, { metric: 'Communication', score: 76 }, { metric: 'Evidence', score: 82 }, { metric: 'Learning', score: 72 }]
-const checks = [{ label: 'Baseline explained', value: 'YES', state: 'pass' }, { label: 'Measurement explained', value: 'PARTIAL', state: 'warn' }, { label: 'Personal contribution', value: 'YES', state: 'pass' }, { label: 'Trade-offs', value: 'WEAK', state: 'danger' }, { label: 'Scaling knowledge', value: 'WEAK', state: 'danger' }]
-
 export function FeedbackPage() {
   const { state, setEvidenceLockDemo } = useProof(); const { theme } = useTheme(); const nav = useNavigate()
+  
+  const evalData = state.evaluation || {
+    dimensions: { baseline: 'yes', measurement: 'partial', personal_contribution: 'yes', trade_offs: 'weak', scaling_knowledge: 'weak' },
+    scores: { technical_fundamentals: 74, problem_solving: 76, project_ownership: 82, communication_clarity: 76, evidence_impact: 82, learning_ability: 72 },
+    claim_confidence_before: 58, claim_confidence_after: 82,
+    evidence_note: 'This increase means the candidate demonstrated stronger understanding during the interview. It does not independently prove that the real-world claim is true.',
+    feedback: 'Run a documented benchmark using a fixed sample, record p50/p95, then explain cache invalidation and memory cost.'
+  }
+
+  const radar = [
+    { metric: 'Fundamentals', score: evalData.scores.technical_fundamentals },
+    { metric: 'Problem solving', score: evalData.scores.problem_solving },
+    { metric: 'Ownership', score: evalData.scores.project_ownership },
+    { metric: 'Communication', score: evalData.scores.communication_clarity },
+    { metric: 'Evidence', score: evalData.scores.evidence_impact },
+    { metric: 'Learning', score: evalData.scores.learning_ability }
+  ]
+
+  const formatDimension = (val: string) => val.toUpperCase()
+  const stateMap = (val: string) => val === 'yes' ? 'pass' : val === 'partial' ? 'warn' : 'danger'
+
+  const checks = [
+    { label: 'Baseline explained', value: formatDimension(evalData.dimensions.baseline), state: stateMap(evalData.dimensions.baseline) },
+    { label: 'Measurement explained', value: formatDimension(evalData.dimensions.measurement), state: stateMap(evalData.dimensions.measurement) },
+    { label: 'Personal contribution', value: formatDimension(evalData.dimensions.personal_contribution), state: stateMap(evalData.dimensions.personal_contribution) },
+    { label: 'Trade-offs', value: formatDimension(evalData.dimensions.trade_offs), state: stateMap(evalData.dimensions.trade_offs) },
+    { label: 'Scaling knowledge', value: formatDimension(evalData.dimensions.scaling_knowledge), state: stateMap(evalData.dimensions.scaling_knowledge) }
+  ]
+
   return <>
     <PageIntro kicker="STEP 05 · EVIDENCE FEEDBACK" title="Your claim is clearer. The weak links are now specific.">Feedback references the answer you gave and separates demonstrated understanding from external truth.</PageIntro>
     <div className="feedback-top">
       <Panel title="Claim truth loop" subtitle="Interview evidence changed demonstrated confidence.">
-        <div className="truth-loop"><div><ScoreRing value={58} label="Before interview" tone="amber" /><ArrowRight /><ScoreRing value={82} label="After interview" tone="green" /></div><blockquote>“Reduced API latency by 35%.”</blockquote><div className="evidence-checks">{checks.map(item => <span key={item.label}><i className={item.state}>{item.state === 'pass' ? <Check /> : item.state === 'warn' ? <AlertTriangle /> : <X />}</i><b>{item.label}</b><em className={item.state}>{item.value}</em></span>)}</div></div>
+        <div className="truth-loop"><div><ScoreRing value={evalData.claim_confidence_before} label="Before interview" tone="amber" /><ArrowRight /><ScoreRing value={evalData.claim_confidence_after} label="After interview" tone="green" /></div><blockquote>“Reduced API latency by 35%.”</blockquote><div className="evidence-checks">{checks.map(item => <span key={item.label}><i className={item.state}>{item.state === 'pass' ? <Check /> : item.state === 'warn' ? <AlertTriangle /> : <X />}</i><b>{item.label}</b><em className={item.state}>{item.value}</em></span>)}</div></div>
       </Panel>
       <Panel title="Interview readiness" subtitle="Six separate evidence dimensions.">
-        <div className="radar-wrap"><ResponsiveContainer width="100%" height={285}><RadarChart data={radar}><PolarGrid stroke={theme === 'light' ? '#dfe6ef' : '#34445b'} /><PolarAngleAxis dataKey="metric" tick={{ fill: theme === 'light' ? '#49566a' : '#a8b7ca', fontSize: 12 }} /><Radar dataKey="score" stroke={theme === 'light' ? '#1769ff' : '#27c4ff'} fill={theme === 'light' ? '#1769ff' : '#1877ff'} fillOpacity={.18} /></RadarChart></ResponsiveContainer><div className="radar-score"><b>76</b><small>/100</small></div></div>
+        <div className="radar-wrap"><ResponsiveContainer width="100%" height={285}><RadarChart data={radar}><PolarGrid stroke={theme === 'light' ? '#dfe6ef' : '#34445b'} /><PolarAngleAxis dataKey="metric" tick={{ fill: theme === 'light' ? '#49566a' : '#a8b7ca', fontSize: 12 }} /><Radar dataKey="score" stroke={theme === 'light' ? '#1769ff' : '#27c4ff'} fill={theme === 'light' ? '#1769ff' : '#1877ff'} fillOpacity={.18} /></RadarChart></ResponsiveContainer><div className="radar-score"><b>{evalData.scores.evidence_impact}</b><small>/100</small></div></div>
       </Panel>
     </div>
-    <EvidenceNotice>This increase means the candidate demonstrated stronger understanding during the interview. It does not independently prove that the real-world 35% claim is true.</EvidenceNotice>
+    <EvidenceNotice>{evalData.evidence_note}</EvidenceNotice>
     <div className="feedback-grid">
-      <Panel title="Evidence from your answer" subtitle="Quoted from the seeded response.">
-        <div className="quote-evidence"><blockquote>“The original endpoint averaged about <mark>420 ms</mark> before my change and around <mark>273 ms</mark> after it.”</blockquote><span><StatusPill state="pass">BASELINE</StatusPill><StatusPill state="pass">MEASUREMENT VALUE</StatusPill></span><blockquote>“I measured several runs using Postman… but I did not preserve the full test sample or p95 results.”</blockquote><span><StatusPill state="warn">HONEST LIMIT</StatusPill><StatusPill state="warn">METHOD PARTIAL</StatusPill></span></div>
+      <Panel title="Evidence from your answer" subtitle="Quoted from your submitted response.">
+        <div className="quote-evidence"><blockquote>“...{state.answer ? state.answer.substring(0, 150) + '...' : 'Demo response used.'}”</blockquote></div>
       </Panel>
       <Panel title="Evidence Lock" subtitle="Improve the wording without manufacturing achievement.">
         <div className="rewrite-box"><small>ORIGINAL</small><p>Made API faster.</p></div>

@@ -130,6 +130,8 @@ def video_plan(request: VideoPlanRequest) -> dict:
     return create_video_plan(request.title, request.duration_minutes, request.daily_minutes, request.transcript_or_notes)
 
 
+# The focus endpoint remains available for server-side state sync or mobile clients.
+# The React frontend uses a local timer loop to avoid network overhead every second.
 @app.post("/api/focus/status")
 def focus(request: FocusRequest) -> dict:
     return focus_status(request.elapsed_seconds, request.limit_minutes, request.demo_timer)

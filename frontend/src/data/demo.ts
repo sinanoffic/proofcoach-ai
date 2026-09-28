@@ -13,6 +13,8 @@ export const initialDemoState: DemoState = {
   interviewAnswered: false,
   currentQuestion: 0,
   answer: '',
+  interviewSessionId: null,
+  evaluation: null,
   evidenceLockDemo: 'idle',
   project: {
     id: 'p1',

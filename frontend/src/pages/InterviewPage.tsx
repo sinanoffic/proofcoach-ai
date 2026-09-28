@@ -12,10 +12,27 @@ const questions = [
 ]
 
 export function InterviewPage() {
-  const { state, setAnswer, submitInterview } = useProof(); const nav = useNavigate(); const [listening, setListening] = useState(false); const [seconds, setSeconds] = useState(0)
-  const q = questions[Math.min(state.currentQuestion, 1)]
+  const { state, setAnswer, submitInterview, startInterview } = useProof(); const nav = useNavigate(); const [listening, setListening] = useState(false); const [seconds, setSeconds] = useState(0)
+  const [loading, setLoading] = useState(false)
+  const [currentQ, setCurrentQ] = useState(questions[0])
+  
+  useEffect(() => {
+    if (!state.interviewSessionId) {
+      fetch('http://localhost:8000/api/interview/start', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ claim: 'Reduced API latency by 35%.', mode: 'Text' })
+      }).then(r => r.json()).then(data => {
+        if (data.session_id) {
+          startInterview(data.session_id)
+          setCurrentQ({ level: data.level, label: 'EVIDENCE VERIFICATION', reason: data.reason, text: data.question })
+        }
+      }).catch(() => {}) // Fallback to demo
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   useEffect(() => { const timer = window.setInterval(() => setSeconds(s => s + 1), 1000); return () => clearInterval(timer) }, [])
-  const speak = () => { if ('speechSynthesis' in window) { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(q.text)) } }
+  const speak = () => { if ('speechSynthesis' in window) { speechSynthesis.cancel(); speechSynthesis.speak(new SpeechSynthesisUtterance(currentQ.text)) } }
   const listen = () => {
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition
     if (!SpeechRecognition) { setListening(false); return }
@@ -23,15 +40,31 @@ export function InterviewPage() {
     recognition.onresult = (event: any) => { const text = Array.from(event.results).map((result: any) => result[0].transcript).join(' '); setAnswer(text) }
     recognition.onend = () => setListening(false); recognition.start(); setListening(true)
   }
-  const submit = () => { submitInterview(); nav('/feedback') }
+  const submit = async () => {
+    setLoading(true)
+    try {
+      const res = await fetch(`http://localhost:8000/api/interview/${state.interviewSessionId || 1}/answer`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ answer: state.answer || 'missing' })
+      })
+      if (!res.ok) throw new Error('API failed')
+      const data = await res.json()
+      submitInterview(data.evaluation)
+      nav('/feedback')
+    } catch {
+      // Fallback
+      submitInterview(null)
+      nav('/feedback')
+    }
+  }
   return <>
     <PageIntro kicker="STEP 04 · ADAPTIVE INTERVIEW" title="Defend the claim—not a memorized answer.">The next probe changes with your demonstrated ownership, evidence, technical depth, and answer structure.</PageIntro>
     <div className="interview-stage">
       <Panel className="interviewer-panel">
         <div className="interviewer-head"><div className="ai-avatar"><img src="/assets/phoenix-watermark.jpg" alt="ProofCoach interviewer" /><span /></div><div><StatusPill state="info">AI INTERVIEWER · {state.candidate.interviewerPersona}</StatusPill><h3>Evidence pressure test</h3><p>Backend Developer · Question {state.currentQuestion + 1} of 3</p></div><div className="interview-timer"><Clock3 /><b>{String(Math.floor(seconds / 60)).padStart(2, '0')}:{String(seconds % 60).padStart(2, '0')}</b></div></div>
-        <div className="question-level"><span>LEVEL {q.level}</span><div><b>{q.label}</b><small>{q.reason}</small></div><button onClick={speak} aria-label="Read question aloud"><Volume2 /></button></div>
-        <AnimatePresence mode="wait"><motion.blockquote key={q.text} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>“{q.text}”</motion.blockquote></AnimatePresence>
-        <div className="answer-box"><div><span>YOUR ANSWER</span><span>{state.answer.trim().split(/\s+/).filter(Boolean).length} words</span></div><textarea value={state.answer} onChange={e => setAnswer(e.target.value)} rows={8} placeholder="Structure your answer: baseline → approach → your contribution → measurement → trade-offs" /><div className="answer-actions"><button className={listening ? 'voice-button active' : 'voice-button'} onClick={listen}>{listening ? <MicOff /> : <Mic />}<span><b>{listening ? 'Listening…' : 'Voice answer'}</b><small>{(window as any).webkitSpeechRecognition || (window as any).SpeechRecognition ? 'Browser speech recognition' : 'Unavailable — use text fallback'}</small></span></button><button className="btn primary" onClick={submit} disabled={!state.answer.trim()}>Submit evidence <ArrowRight /></button></div></div>
+        <div className="question-level"><span>LEVEL {currentQ.level}</span><div><b>{currentQ.label}</b><small>{currentQ.reason}</small></div><button onClick={speak} aria-label="Read question aloud"><Volume2 /></button></div>
+        <AnimatePresence mode="wait"><motion.blockquote key={currentQ.text} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}>“{currentQ.text}”</motion.blockquote></AnimatePresence>
+        <div className="answer-box"><div><span>YOUR ANSWER</span><span>{state.answer.trim().split(/\s+/).filter(Boolean).length} words</span></div><textarea value={state.answer} onChange={e => setAnswer(e.target.value)} rows={8} placeholder="Structure your answer: baseline → approach → your contribution → measurement → trade-offs" /><div className="answer-actions"><button className={listening ? 'voice-button active' : 'voice-button'} onClick={listen}>{listening ? <MicOff /> : <Mic />}<span><b>{listening ? 'Listening…' : 'Voice answer'}</b><small>{(window as any).webkitSpeechRecognition || (window as any).SpeechRecognition ? 'Browser speech recognition' : 'Unavailable — use text fallback'}</small></span></button><button className="btn primary" onClick={submit} disabled={!state.answer.trim() || loading}>{loading ? 'Analyzing...' : 'Submit evidence'} <ArrowRight /></button></div></div>
         <button className="demo-answer" onClick={() => setAnswer(demoAnswer)}><Sparkles />Use seeded demo answer</button>
       </Panel>
       <aside className="interview-side">

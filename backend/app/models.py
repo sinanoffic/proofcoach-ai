@@ -1,5 +1,5 @@
+from __future__ import annotations
 from datetime import datetime, timezone
-from typing import Optional
 
 from sqlmodel import Field, SQLModel
 
@@ -9,7 +9,7 @@ def utc_now() -> datetime:
 
 
 class CandidateProfile(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     name: str
     category: str = "Student"
     education: str = "BE Artificial Intelligence & Machine Learning"
@@ -25,7 +25,7 @@ class CandidateProfile(SQLModel, table=True):
 
 
 class ResumeRecord(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     filename: str
     extracted_text: str
     parser_score: int
@@ -34,7 +34,7 @@ class ResumeRecord(SQLModel, table=True):
 
 
 class InterviewSession(SQLModel, table=True):
-    id: Optional[int] = Field(default=None, primary_key=True)
+    id: int | None = Field(default=None, primary_key=True)
     status: str = "active"
     level: str = "D"
     question_index: int = 0

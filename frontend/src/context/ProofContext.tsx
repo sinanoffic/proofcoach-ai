@@ -8,7 +8,8 @@ interface ProofContextValue {
   complete: (key: string) => void
   setMetric: (key: MetricKey, value: number) => void
   setAnswer: (answer: string) => void
-  submitInterview: () => void
+  startInterview: (sessionId: number) => void
+  submitInterview: (evaluation: any) => void
   setEvidenceLockDemo: (value: DemoState['evidenceLockDemo']) => void
   resetDemo: () => void
   deleteLocalData: () => void
@@ -36,7 +37,8 @@ export function ProofProvider({ children }: { children: ReactNode }) {
     complete: key => commit({ ...state, completed: Array.from(new Set([...state.completed, key])) }),
     setMetric: (key, value) => commit({ ...state, metrics: { ...state.metrics, [key]: value } }),
     setAnswer: answer => commit({ ...state, answer }),
-    submitInterview: () => commit({ ...state, interviewAnswered: true, currentQuestion: 1, metrics: { ...state.metrics, interview: 76, claim: 82, questPoints: state.metrics.questPoints + 50 }, completed: Array.from(new Set([...state.completed, 'interview', 'feedback'])) }),
+    startInterview: sessionId => commit({ ...state, interviewSessionId: sessionId }),
+    submitInterview: (evaluation) => commit({ ...state, interviewAnswered: true, evaluation, currentQuestion: 1, metrics: { ...state.metrics, interview: 76, claim: 82, questPoints: state.metrics.questPoints + 50 }, completed: Array.from(new Set([...state.completed, 'interview', 'feedback'])) }),
     setEvidenceLockDemo: evidenceLockDemo => commit({ ...state, evidenceLockDemo }),
     resetDemo: () => commit({ ...initialDemoState }),
     deleteLocalData: () => { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem('proofcoach-focus-v1'); setState({ ...initialDemoState, candidate: { ...initialDemoState.candidate, name: '' }, completed: [] }) },

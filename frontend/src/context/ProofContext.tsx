@@ -1,6 +1,6 @@
 import { createContext, useContext, useMemo, useState, type ReactNode } from 'react'
 import { initialDemoState } from '../data/demo'
-import type { Candidate, DemoState, MetricKey } from '../types'
+import type { Candidate, DemoState, InterviewEmail, MetricKey } from '../types'
 
 interface ProofContextValue {
   state: DemoState
@@ -16,6 +16,11 @@ interface ProofContextValue {
   updateProject: (project: DemoState['project']) => void
   addVideoNote: (note: Omit<DemoState['video']['notes'][number], 'id'>) => void
   completeTask: (taskId: string) => void
+  addInterviewEmail: (email: InterviewEmail) => void
+  updateInterviewEmail: (id: string, updates: Partial<InterviewEmail>) => void
+  deleteInterviewEmail: (id: string) => void
+  setInterviewEmailStatus: (id: string, status: InterviewEmail['status']) => void
+  togglePreparationChecklist: (emailId: string, checklistId: string) => void
 }
 
 const STORAGE_KEY = 'proofcoach-demo-v1'
@@ -24,7 +29,13 @@ const ProofContext = createContext<ProofContextValue | null>(null)
 function loadState(): DemoState {
   try {
     const stored = localStorage.getItem(STORAGE_KEY)
-    return stored ? { ...initialDemoState, ...JSON.parse(stored) } : initialDemoState
+    if (!stored) return initialDemoState
+    const parsed = JSON.parse(stored)
+    return {
+      ...initialDemoState,
+      ...parsed,
+      interviewEmails: Array.isArray(parsed.interviewEmails) ? parsed.interviewEmails : initialDemoState.interviewEmails,
+    }
   } catch { return initialDemoState }
 }
 
@@ -41,7 +52,7 @@ export function ProofProvider({ children }: { children: ReactNode }) {
     submitInterview: (evaluation) => commit({ ...state, interviewAnswered: true, evaluation, currentQuestion: 1, metrics: { ...state.metrics, interview: 76, claim: 82, questPoints: state.metrics.questPoints + 50 }, completed: Array.from(new Set([...state.completed, 'interview', 'feedback'])) }),
     setEvidenceLockDemo: evidenceLockDemo => commit({ ...state, evidenceLockDemo }),
     resetDemo: () => commit({ ...initialDemoState }),
-    deleteLocalData: () => { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem('proofcoach-focus-v1'); setState({ ...initialDemoState, candidate: { ...initialDemoState.candidate, name: '' }, completed: [] }) },
+    deleteLocalData: () => { localStorage.removeItem(STORAGE_KEY); localStorage.removeItem('proofcoach-focus-v1'); setState({ ...initialDemoState, candidate: { ...initialDemoState.candidate, name: '' }, completed: [], interviewEmails: [] }) },
     updateProject: project => commit({ ...state, project }),
     addVideoNote: note => commit({ ...state, video: { ...state.video, notes: [...state.video.notes, { ...note, id: 'n' + Date.now() }] } }),
     completeTask: taskId => {
@@ -49,6 +60,36 @@ export function ProofProvider({ children }: { children: ReactNode }) {
       const nextTasks = state.project.tasks.map(t => t.id === taskId ? { ...t, completed: true, stage: 'COMPLETED' as const } : t)
       const nextProgress = Math.min(100, state.project.progress + 4)
       commit({ ...state, project: { ...state.project, tasks: nextTasks, progress: nextProgress } })
+    },
+    addInterviewEmail: email => {
+      const nextEmails = [email, ...(state.interviewEmails || [])]
+      commit({ ...state, interviewEmails: nextEmails })
+    },
+    updateInterviewEmail: (id, updates) => {
+      const nextEmails = (state.interviewEmails || []).map(item =>
+        item.id === id ? { ...item, ...updates, updatedAt: new Date().toISOString() } : item
+      )
+      commit({ ...state, interviewEmails: nextEmails })
+    },
+    deleteInterviewEmail: id => {
+      const nextEmails = (state.interviewEmails || []).filter(item => item.id !== id)
+      commit({ ...state, interviewEmails: nextEmails })
+    },
+    setInterviewEmailStatus: (id, status) => {
+      const nextEmails = (state.interviewEmails || []).map(item =>
+        item.id === id ? { ...item, status, updatedAt: new Date().toISOString() } : item
+      )
+      commit({ ...state, interviewEmails: nextEmails })
+    },
+    togglePreparationChecklist: (emailId, checklistId) => {
+      const nextEmails = (state.interviewEmails || []).map(item => {
+        if (item.id !== emailId) return item
+        const nextChecklist = item.preparationChecklist.map(chk =>
+          chk.id === checklistId ? { ...chk, done: !chk.done } : chk
+        )
+        return { ...item, preparationChecklist: nextChecklist, updatedAt: new Date().toISOString() }
+      })
+      commit({ ...state, interviewEmails: nextEmails })
     },
   }), [state])
   return <ProofContext.Provider value={value}>{children}</ProofContext.Provider>

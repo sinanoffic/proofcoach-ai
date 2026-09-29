@@ -9,10 +9,11 @@ from .config import get_settings
 from .db import create_db_and_tables, get_session
 from .models import CandidateProfile, InterviewSession, ResumeRecord
 from .schemas import (
-    AnswerRequest, ClaimRequest, EvidenceGraphRequest, FocusRequest, InterviewStartRequest,
-    JobRequest, LearningRequest, RewriteRequest, VideoPlanRequest,
+    AnswerRequest, ClaimRequest, EvidenceGraphRequest, FocusRequest, InterviewEmailTextRequest,
+    InterviewStartRequest, JobRequest, LearningRequest, RewriteRequest, VideoPlanRequest,
 )
 from .seed import DEMO_RESUME_TEXT, demo_state
+from .services.email_intelligence import analyze_email_text, extract_email_text_from_bytes
 from .services.evidence import analyze_job, build_evidence_graph
 from .services.evidence_lock import assess_rewrite
 from .services.focus import focus_status
@@ -70,6 +71,32 @@ async def resume_parse(file: UploadFile = File(...)) -> dict:
         raise HTTPException(status_code=413, detail="Resume must be under 8 MB.")
     try:
         return parse_resume(data, file.filename).model_dump()
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.post("/api/interview-email/upload")
+async def interview_email_upload(file: UploadFile = File(...)) -> dict:
+    data = await file.read()
+    if len(data) > 8 * 1024 * 1024:
+        raise HTTPException(status_code=413, detail="Email file must be under 8 MB.")
+    try:
+        text = extract_email_text_from_bytes(data, file.filename or "interview_email.txt")
+        return analyze_email_text(text, file_name=file.filename, source="upload").model_dump()
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.post("/api/interview-email/analyze")
+def interview_email_analyze(request: InterviewEmailTextRequest) -> dict:
+    try:
+        return analyze_email_text(
+            request.email_text,
+            file_name=request.file_name,
+            candidate_skills=request.candidate_skills,
+            candidate_role=request.candidate_role,
+            source="paste" if not request.file_name else "upload",
+        ).model_dump()
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 

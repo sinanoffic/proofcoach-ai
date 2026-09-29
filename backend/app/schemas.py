@@ -23,7 +23,7 @@ class ParserAnalysis(BaseModel):
     measurable_claims: list[str]
     checks: list[ParserCheck]
     parser_robustness: int
-    disclaimer: str = "ProofCoach Parser Robustness is a transparent local heuristic, not a universal ATS score."
+    disclaimer: str = "Phoenix Parser Robustness is a transparent local heuristic, not a universal ATS score."
 
 
 class JobRequest(BaseModel):

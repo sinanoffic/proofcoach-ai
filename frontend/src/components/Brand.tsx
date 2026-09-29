@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom'
 
 export function Brand({ compact = false }: { compact?: boolean }) {
-  return <Link to="/" className="brand" aria-label="ProofCoach AI home">
+  return <Link to="/" className="brand" aria-label="Phoenix home">
     <span className="brand-mark"><img src="/assets/phoenix-watermark.jpg" alt="" /></span>
-    {!compact && <span><strong>PROOFCOACH</strong><small>AI</small></span>}
+    {!compact && <span><strong>PHOENIX</strong></span>}
   </Link>
 }
 

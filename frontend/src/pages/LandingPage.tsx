@@ -13,7 +13,7 @@ export function LandingPage() {
     <main className="hero">
       <PhoenixWatermark className="hero-phoenix" />
       <motion.div className="hero-copy" initial={false} animate={{ opacity: 1, y: 0 }} transition={{ duration: .5 }}>
-        <span className="hero-chip"><Sparkles size={15} /> PROOFCOACH AI · CAREER EVIDENCE</span>
+        <span className="hero-chip"><Sparkles size={15} /> PHOENIX · CAREER EVIDENCE</span>
         <h1>Build it.<br /><em>Prove it.</em><br />Defend it.</h1>
         <p>A private career preparation system that checks whether your resume can be understood, supported by evidence, and defended in an interview.</p>
         <div className="hero-actions"><button className="btn primary large" onClick={() => navigate('/onboarding')}>Start career preparation <ArrowRight size={19} /></button><button className="btn outline large" onClick={runDemo}>Run demo</button></div>

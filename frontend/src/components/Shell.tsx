@@ -56,7 +56,7 @@ export function Shell({ children }: { children: ReactNode }) {
     </aside>
     <main className="main-shell">
       <header className="topbar">
-        <div><span className="eyebrow"><Sparkles size={13} /> PROOFCOACH WORKSPACE</span><h1>{titles[location.pathname] || 'ProofCoach AI'}</h1></div>
+        <div><span className="eyebrow"><Sparkles size={13} /> PHOENIX WORKSPACE</span><h1>{titles[location.pathname] || 'Phoenix'}</h1></div>
         <div className="top-actions">
           <span className="top-local"><ShieldCheck size={15} />Local-first</span>
           <span className="top-demo">DEMO</span>

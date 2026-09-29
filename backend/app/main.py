@@ -30,7 +30,7 @@ async def lifespan(_: FastAPI):
     yield
 
 
-app = FastAPI(title="ProofCoach AI", version="0.1.0", lifespan=lifespan)
+app = FastAPI(title="Phoenix", version="0.1.0", lifespan=lifespan)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[settings.frontend_origin, "http://127.0.0.1:5173"],
@@ -51,7 +51,7 @@ def reset_demo(session: Session = Depends(get_session)) -> dict:
         session.exec(delete(model))
     session.add(CandidateProfile(name="Demo Candidate"))
     analysis = analyze_resume_text(DEMO_RESUME_TEXT, layout={"two_column": True, "tables": True})
-    session.add(ResumeRecord(filename="proofcoach-demo-resume.pdf", extracted_text=DEMO_RESUME_TEXT, parser_score=analysis.parser_robustness, analysis_json=analysis.model_dump_json()))
+    session.add(ResumeRecord(filename="phoenix-demo-resume.pdf", extracted_text=DEMO_RESUME_TEXT, parser_score=analysis.parser_robustness, analysis_json=analysis.model_dump_json()))
     session.commit()
     return {"reset": True, "state": demo_state()}
 

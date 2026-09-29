@@ -18,7 +18,7 @@ export function RolePage() {
   const requirements = analysis ? analysis.required_skills.map(skill => skillEvidence.find(item => item.skill.toLowerCase() === skill.toLowerCase()) ?? { skill, status: 'missing', note: 'No resume evidence found' }) : skillEvidence
   const covered = requirements.filter(item => item.status === 'strong' || item.status === 'evidence' || item.status === 'partial').length
   return <>
-    <PageIntro kicker="STEP 02 · TARGET ROLE" title="Translate the job into evidence requirements.">Choose a demo role or paste a description. ProofCoach separates required skills, preferred skills, responsibilities, and competencies.</PageIntro>
+    <PageIntro kicker="STEP 02 · TARGET ROLE" title="Translate the job into evidence requirements.">Choose a demo role or paste a description. Phoenix separates required skills, preferred skills, responsibilities, and competencies.</PageIntro>
     <div className="role-grid">
       <Panel title="Target input" subtitle="Demo role or pasted job description.">
         <label className="search-select"><Search /><select value={role} onChange={e => setRole(e.target.value)}>{roles.map(item => <option key={item}>{item}</option>)}</select></label>

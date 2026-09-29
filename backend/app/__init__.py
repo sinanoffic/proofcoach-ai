@@ -1,2 +1,2 @@
-"""ProofCoach AI local backend."""
+"""Phoenix local backend."""
 

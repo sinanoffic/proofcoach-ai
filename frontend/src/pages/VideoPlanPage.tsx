@@ -52,7 +52,7 @@ export function VideoPlanPage() {
           </div>
         </Panel>
 
-        <Panel title="Video Learning Progress" subtitle="ProofCoach tracks comprehension, not just watch time.">
+        <Panel title="Video Learning Progress" subtitle="Phoenix tracks comprehension, not just watch time.">
           <div className="video-progress-stats">
             <div className="v-stat"><b>{video.watched}%</b><span>WATCHED</span></div>
             <div className="v-stat"><b>{video.understood}%</b><span>UNDERSTOOD</span></div>

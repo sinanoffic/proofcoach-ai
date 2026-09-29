@@ -11,7 +11,7 @@ export function SettingsPage() {
   const exportProgress = () => {
     const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' })
     const url = URL.createObjectURL(blob); const link = document.createElement('a')
-    link.href = url; link.download = 'proofcoach-progress.json'; link.click(); URL.revokeObjectURL(url)
+    link.href = url; link.download = 'phoenix-progress.json'; link.click(); URL.revokeObjectURL(url)
   }
   const remove = async () => { await deleteBackendData(); deleteLocalData(); setConfirming(false); setMessage('Profile, resume, interview transcript, and browser demo state deleted.'); navigate('/') }
   return <>
